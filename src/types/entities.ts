@@ -69,13 +69,13 @@ export interface DashboardStats {
 
 /** Low stock product summary returned by get_low_stock_products() */
 export interface LowStockProduct {
-  id:             string;
-  name:           string;
-  sku:            string;
-  category:       string | null;
-  stock_quantity: number;
-  min_stock:      number;
-  selling_price:  number;
+  id:              string;
+  name:            string;
+  sku:             string;
+  category:        string | null;
+  stock_quantity:  number;
+  min_stock_level: number;
+  selling_price:   number;
 }
 
 // ─── Form Input Types ─────────────────────────────────────────────────────────

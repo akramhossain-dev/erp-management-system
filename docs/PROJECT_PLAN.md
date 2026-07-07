@@ -1,9 +1,72 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 3 — Authentication System (Complete)  
-> **Status:** ✅ Phase 1 Complete | ✅ Phase 2 Complete | ✅ Phase 3 Complete  
+> **Phase:** 4 — ERP Layout & Dashboard System (Complete)  
+> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 4 — ERP Layout & Dashboard System ✅
+
+> **Completed:** 2026-07-07
+
+### Layout Architecture
+
+| Component | Location | Description |
+|-----------|----------|-------------|
+| `DashboardLayout` | `layouts/DashboardLayout.tsx` | Shell: Sidebar + Navbar + Outlet |
+| `Sidebar` | `components/common/Sidebar/` | Collapsible nav (260px/72px) |
+| `MobileDrawer` | `components/common/Sidebar/MobileDrawer.tsx` | Mobile overlay drawer |
+| `Navbar` | `components/common/Navbar/` | Sticky header: title, bell, user menu |
+| `NavIcons` | `components/common/NavIcons.tsx` | Inline SVG icon set |
+| `KpiCard` | `components/common/KpiCard/` | Reusable glass metric card |
+
+### Dashboard Feature Structure
+
+```
+features/dashboard/
+├── components/
+│   ├── DashboardStats.tsx    → 6 KPI cards grid
+│   ├── RevenueChart.tsx      → 6-month area chart (Recharts)
+│   ├── SalesChart.tsx        → Completed vs pending bar chart
+│   ├── RecentActivity.tsx    → Merged sales+purchases feed
+│   └── LowStockAlert.tsx     → Low stock product table
+├── hooks/
+│   └── useDashboardStats.ts  → 6 TanStack Query hooks
+├── services/
+│   └── dashboardService.ts   → Supabase queries
+└── index.ts                  → Barrel exports
+```
+
+### Chart Library
+
+- **Recharts** — React chart library with responsive containers
+- Revenue: `AreaChart` with gradient fill and custom tooltip
+- Sales: `BarChart` grouped bars (completed=green, pending=amber)
+
+### Responsive Breakpoints
+
+| Breakpoint | KPI Grid | Charts | Activity |
+|------------|----------|--------|----------|
+| mobile (<sm) | 1 column | stacked | stacked |
+| sm–lg | 2 columns | stacked | stacked |
+| lg–xl | 2 columns | 2/3 + 1/3 | stacked |
+| xl+ | 3 columns | 2/3 + 1/3 | side-by-side |
+
+### Phase 4 Verification Checklist
+
+- ✅ Sidebar: 7 nav items in 4 groups, active state, collapse/expand
+- ✅ Navbar: dynamic page title, notification bell, user dropdown + logout
+- ✅ MobileDrawer: auto-closes on route change, scroll trapped
+- ✅ KPI Cards: 6 metrics, trend badge, skeleton loading, hover glow
+- ✅ RevenueChart: 6-month area chart, custom tooltip, skeleton
+- ✅ SalesChart: grouped bar chart, custom legend, skeleton
+- ✅ RecentActivity: merged feed, status badges, empty state
+- ✅ LowStockAlert: product table with Out of Stock / Low Stock differentiation
+- ✅ Refresh button invalidates all TanStack Query caches
+- ✅ Data hooks: all enabled only when `isAuthenticated = true`
+- ✅ Production build: zero TypeScript errors (804 modules)
 
 ---
 
