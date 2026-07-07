@@ -16,6 +16,10 @@ import { CustomerEditPage } from "@/pages/customers/CustomerEditPage";
 import { SuppliersPage } from "@/pages/suppliers/SuppliersPage";
 import { SupplierNewPage } from "@/pages/suppliers/SupplierNewPage";
 import { SupplierEditPage } from "@/pages/suppliers/SupplierEditPage";
+// ─── Phase 7: Purchases pages ───────────────────────────────────────────────
+import { PurchasesPage } from "@/pages/purchases/PurchasesPage";
+import { PurchaseNewPage } from "@/pages/purchases/PurchaseNewPage";
+import { PurchaseDetailsPage } from "@/pages/purchases/PurchaseDetailsPage";
 import { ROUTES } from "@/utils/constants";
 
 // ─── Placeholder for Phase 4+ pages ──────────────────────────────────────────
@@ -80,10 +84,10 @@ export function AppRoutes() {
         <Route path={ROUTES.SUPPLIERS_NEW} element={<SupplierNewPage />} />
         <Route path="/suppliers/:id/edit"  element={<SupplierEditPage />} />
 
-        {/* Purchases — Phase 5 */}
-        <Route path={ROUTES.PURCHASES}     element={<ComingSoonPage title="Purchases" />} />
-        <Route path={ROUTES.PURCHASES_NEW} element={<ComingSoonPage title="New Purchase" />} />
-        <Route path="/purchases/:id"       element={<ComingSoonPage title="Purchase Detail" />} />
+        {/* Purchases — Phase 7 ✅ */}
+        <Route path={ROUTES.PURCHASES}     element={<PurchasesPage />} />
+        <Route path={ROUTES.PURCHASES_NEW} element={<PurchaseNewPage />} />
+        <Route path="/purchases/:id"       element={<PurchaseDetailsPage />} />
 
         {/* Sales — Phase 5 */}
         <Route path={ROUTES.SALES}     element={<ComingSoonPage title="Sales" />} />

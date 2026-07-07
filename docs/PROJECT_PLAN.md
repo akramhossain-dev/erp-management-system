@@ -1,9 +1,51 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 6 — Customer & Supplier Management Module (Complete)  
-> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 | ✅ Phase 6 Complete  
+> **Phase:** 7 — Purchase Management Module (Complete)  
+> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 | ✅ Phase 6 | ✅ Phase 7 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 7 — Purchase Management Module ✅
+
+> **Completed:** 2026-07-07
+
+### Module Architecture
+
+Structured cleanly under `src/features/purchases/`:
+
+```
+features/purchases/
+├── schemas/
+│   └── purchaseSchemas.ts    → purchaseSchema, form defaults
+├── services/
+│   └── purchaseService.ts    → getPurchases, getPurchaseById,
+│                               createPurchase (pending -> completed step flow),
+│                               deletePurchase
+├── hooks/
+│   ├── usePurchases.ts       → list + detail hooks
+│   └── usePurchaseMutations.ts → create + delete mutations with cash sync
+└── components/
+    ├── PurchaseTable.tsx      → listings with PO short-uuid
+    ├── PurchaseFilters.tsx    → search bar
+    ├── PurchaseForm.tsx       → form wrapper with react-hook-form field array
+    ├── PurchaseItemRow.tsx    → product selection list row with pricing
+    ├── PurchaseSummary.tsx    → sidebar total aggregate calculator
+    └── PurchaseDetails.tsx    → view layout showing line details
+```
+
+### Business Flow & Stock updates
+
+1. **Transaction safety**:
+   - Header is saved as `pending` with calculated total sum.
+   - Line items are inserted into child table.
+   - Status updates to `completed`, triggering `on_purchase_completed` which executes `increase_stock_on_purchase_complete` in postgres.
+2. **Direct insert support**:
+   - Added DB trigger `on_purchase_item_inserted` (`008_purchase_stock_trigger.sql`) which increases stock automatically on insertion of purchase items if the parent invoice is already completed.
+   - Designed to avoid duplicate stock increments across INSERT vs UPDATE cycles.
+3. **Cache invalidation**:
+   - Creating a purchase automatically invalidates `QUERY_KEYS.PRODUCTS`, `QUERY_KEYS.DASHBOARD`, and lists, synchronizing totals, counters, and stock warnings.
 
 ---
 

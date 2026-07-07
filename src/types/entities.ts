@@ -29,7 +29,7 @@ export type { TransactionStatus };
 
 /** Purchase with its supplier name included (avoids a separate fetch) */
 export interface PurchaseWithSupplier extends Purchase {
-  supplier: Pick<Supplier, "id" | "name" | "email" | "phone">;
+  supplier: Pick<Supplier, "id" | "name" | "email" | "phone" | "address">;
 }
 
 /** Purchase with all its line items and their products */
@@ -43,7 +43,7 @@ export interface PurchaseWithItems extends PurchaseWithSupplier {
 
 /** Sale with its customer name included */
 export interface SaleWithCustomer extends Sale {
-  customer: Pick<Customer, "id" | "name" | "email" | "phone">;
+  customer: Pick<Customer, "id" | "name" | "email" | "phone" | "address">;
 }
 
 /** Sale with all its line items and their products */

@@ -323,14 +323,15 @@ public.users ──────────────────────�
 ### 5.1 Purchase Completion — Stock Increase
 
 ```
-User marks purchase status → 'completed'
+User marks purchase status → 'completed' OR creates a completed purchase initially
             │
             ▼
-DB Trigger: on_purchase_completed fires
-  (AFTER UPDATE OF status ON purchases)
+DB Trigger: on_purchase_completed (on purchases status update) 
+            OR 
+DB Trigger: on_purchase_item_inserted (on purchase_items insert)
             │
             ▼
-For each purchase_item in this purchase:
+For each purchase_item in this completed purchase:
     UPDATE products
     SET stock_quantity = stock_quantity + purchase_item.quantity
     WHERE products.id = purchase_item.product_id
@@ -340,7 +341,9 @@ For each purchase_item in this purchase:
    All items updated in one DB operation.
 ```
 
-**Function:** `increase_stock_on_purchase_complete()` — SECURITY DEFINER, bypasses RLS.
+**Functions:**
+- `increase_stock_on_purchase_complete()` — SECURITY DEFINER, fires AFTER UPDATE OF status ON purchases.
+- `increase_stock_on_purchase_item_insert()` — SECURITY DEFINER, fires AFTER INSERT ON purchase_items if parent status is 'completed'.
 
 ---
 
@@ -499,3 +502,7 @@ Returns products where `stock_quantity <= min_stock`.
 const { data } = await supabase.rpc('get_low_stock_products');
 // Returns: Array<{ id, name, sku, category, stock_quantity, min_stock, selling_price }>
 ```
+
+### `increase_stock_on_purchase_item_insert()` → Trigger Function
+
+Fires on `purchase_items` insert to increase stock levels if purchase is marked completed.
