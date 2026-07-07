@@ -1,132 +1,135 @@
 /**
- * Domain entity interfaces.
- * These match the planned database schema from DATABASE.md.
+ * Domain entity interfaces for the ERP Management System.
+ *
+ * These types are derived from the database Row types but are used
+ * throughout the application layer (components, hooks, services).
+ *
+ * They mirror the exact column names from the PostgreSQL schema.
  */
 
-// ─── Auth ────────────────────────────────────────────────────────────────────
+import type { Tables, TransactionStatus } from "./database.types";
 
-export interface User {
-  id: string;
-  email: string;
-  created_at: string;
+// ─── Core Entity Aliases ──────────────────────────────────────────────────────
+// These map directly to Supabase table rows.
+
+export type User           = Tables<"users">;
+export type Product        = Tables<"products">;
+export type Customer       = Tables<"customers">;
+export type Supplier       = Tables<"suppliers">;
+export type Purchase       = Tables<"purchases">;
+export type PurchaseItem   = Tables<"purchase_items">;
+export type Sale           = Tables<"sales">;
+export type SaleItem       = Tables<"sale_items">;
+
+// Re-export status type for convenience
+export type { TransactionStatus };
+
+// ─── Enriched / Joined Entity Types ───────────────────────────────────────────
+// These are what the UI actually renders — rows joined with related data.
+
+/** Purchase with its supplier name included (avoids a separate fetch) */
+export interface PurchaseWithSupplier extends Purchase {
+  supplier: Pick<Supplier, "id" | "name" | "email" | "phone">;
 }
 
-// ─── Products ────────────────────────────────────────────────────────────────
-
-export interface Product {
-  id: string;
-  user_id: string;
-  name: string;
-  sku: string;
-  description?: string;
-  category?: string;
-  price: number;
-  stock_qty: number;
-  min_stock_qty?: number;
-  created_at: string;
-  updated_at: string;
+/** Purchase with all its line items and their products */
+export interface PurchaseWithItems extends PurchaseWithSupplier {
+  purchase_items: Array<
+    PurchaseItem & {
+      product: Pick<Product, "id" | "name" | "sku" | "category">;
+    }
+  >;
 }
 
-export type ProductInsert = Omit<Product, "id" | "user_id" | "created_at" | "updated_at">;
-export type ProductUpdate = Partial<ProductInsert>;
-
-// ─── Customers ───────────────────────────────────────────────────────────────
-
-export interface Customer {
-  id: string;
-  user_id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  created_at: string;
-  updated_at: string;
+/** Sale with its customer name included */
+export interface SaleWithCustomer extends Sale {
+  customer: Pick<Customer, "id" | "name" | "email" | "phone">;
 }
 
-export type CustomerInsert = Omit<Customer, "id" | "user_id" | "created_at" | "updated_at">;
-export type CustomerUpdate = Partial<CustomerInsert>;
-
-// ─── Suppliers ───────────────────────────────────────────────────────────────
-
-export interface Supplier {
-  id: string;
-  user_id: string;
-  name: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  created_at: string;
-  updated_at: string;
+/** Sale with all its line items and their products */
+export interface SaleWithItems extends SaleWithCustomer {
+  sale_items: Array<
+    SaleItem & {
+      product: Pick<Product, "id" | "name" | "sku" | "category">;
+    }
+  >;
 }
 
-export type SupplierInsert = Omit<Supplier, "id" | "user_id" | "created_at" | "updated_at">;
-export type SupplierUpdate = Partial<SupplierInsert>;
+// ─── Dashboard Types ──────────────────────────────────────────────────────────
 
-// ─── Purchases ───────────────────────────────────────────────────────────────
-
-export type PurchaseStatus = "pending" | "completed" | "cancelled";
-
-export interface Purchase {
-  id: string;
-  user_id: string;
-  supplier_id: string;
-  status: PurchaseStatus;
-  total_amount: number;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  // Relations
-  supplier?: Supplier;
-  items?: PurchaseItem[];
-}
-
-export interface PurchaseItem {
-  id: string;
-  purchase_id: string;
-  product_id: string;
-  quantity: number;
-  unit_price: number;
-  total_price: number;
-  // Relations
-  product?: Product;
-}
-
-// ─── Sales ───────────────────────────────────────────────────────────────────
-
-export type SaleStatus = "pending" | "completed" | "cancelled";
-
-export interface Sale {
-  id: string;
-  user_id: string;
-  customer_id: string;
-  status: SaleStatus;
-  total_amount: number;
-  notes?: string;
-  created_at: string;
-  updated_at: string;
-  // Relations
-  customer?: Customer;
-  items?: SaleItem[];
-}
-
-export interface SaleItem {
-  id: string;
-  sale_id: string;
-  product_id: string;
-  quantity: number;
-  unit_price: number;
-  total_price: number;
-  // Relations
-  product?: Product;
-}
-
-// ─── Dashboard ───────────────────────────────────────────────────────────────
-
+/** KPI data returned by the get_dashboard_stats() RPC function */
 export interface DashboardStats {
-  total_products: number;
+  total_products:  number;
   total_customers: number;
   total_suppliers: number;
   total_purchases: number;
-  total_sales: number;
-  total_revenue: number;
+  total_sales:     number;
+  total_revenue:   number;
 }
+
+/** Low stock product summary returned by get_low_stock_products() */
+export interface LowStockProduct {
+  id:             string;
+  name:           string;
+  sku:            string;
+  category:       string | null;
+  stock_quantity: number;
+  min_stock:      number;
+  selling_price:  number;
+}
+
+// ─── Form Input Types ─────────────────────────────────────────────────────────
+// Used with React Hook Form. user_id is injected by the service layer.
+
+export type ProductFormInput = {
+  name:           string;
+  sku:            string;
+  description?:   string;
+  category?:      string;
+  purchase_price: number;
+  selling_price:  number;
+  stock_quantity?: number;
+  min_stock?:     number;
+};
+
+export type CustomerFormInput = {
+  name:     string;
+  email?:   string;
+  phone?:   string;
+  address?: string;
+  notes?:   string;
+};
+
+export type SupplierFormInput = {
+  name:     string;
+  email?:   string;
+  phone?:   string;
+  address?: string;
+  notes?:   string;
+};
+
+export type PurchaseItemInput = {
+  product_id:  string;
+  quantity:    number;
+  unit_price:  number;
+};
+
+export type PurchaseFormInput = {
+  supplier_id:   string;
+  purchase_date: string;
+  notes?:        string;
+  items:         PurchaseItemInput[];
+};
+
+export type SaleItemInput = {
+  product_id: string;
+  quantity:   number;
+  unit_price: number;
+};
+
+export type SaleFormInput = {
+  customer_id: string;
+  sale_date:   string;
+  notes?:      string;
+  items:       SaleItemInput[];
+};

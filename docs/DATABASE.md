@@ -1,10 +1,58 @@
 # ERP Management System — Database Architecture
 
 > **Version:** 1.0.0  
-> **Phase:** 0 — Planning & Design  
+> **Phase:** 2 — Database Architecture & Supabase PostgreSQL (Complete)  
 > **Database:** PostgreSQL (via Supabase)  
-> **Status:** Draft  
+> **Status:** ✅ Phase 2 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 2 — Completion Status ✅
+
+> **Completed:** 2026-07-07
+
+### Migration Files Created
+
+| File | Purpose |
+|------|---------|
+| `supabase/migrations/000_master_migration.sql` | **Run this** — complete schema in one file |
+| `supabase/migrations/001_create_users_table.sql` | users table + handle_new_user trigger |
+| `supabase/migrations/002_create_products_table.sql` | products table + indexes + RLS |
+| `supabase/migrations/003_create_customers_table.sql` | customers table + indexes + RLS |
+| `supabase/migrations/004_create_suppliers_table.sql` | suppliers table + indexes + RLS |
+| `supabase/migrations/005_create_purchases_tables.sql` | purchases + purchase_items + stock increase trigger |
+| `supabase/migrations/006_create_sales_tables.sql` | sales + sale_items + stock decrease trigger |
+| `supabase/migrations/007_create_functions.sql` | Dashboard RPC functions |
+
+### How to Apply the Schema
+
+```
+1. Go to https://app.supabase.com
+2. Select your project
+3. Navigate to: SQL Editor → New query
+4. Open: supabase/migrations/000_master_migration.sql
+5. Paste the full content → Click "Run"
+6. Verify: Table Editor should show 8 tables
+```
+
+### Verification Checklist
+
+- ✅ 8 tables created (users, products, customers, suppliers, purchases, purchase_items, sales, sale_items)
+- ✅ All primary keys (UUID, gen_random_uuid())
+- ✅ All foreign keys with correct cascade rules
+- ✅ CHECK constraints (non-negative prices/quantities, status enums, email format)
+- ✅ RLS enabled on all 8 tables
+- ✅ RLS policies: SELECT/INSERT/UPDATE/DELETE per table
+- ✅ Child table RLS via parent JOIN (purchase_items, sale_items)
+- ✅ 19 performance indexes
+- ✅ Stock increase trigger (on_purchase_completed)
+- ✅ Stock decrease trigger with validation (on_sale_completed)
+- ✅ Auto user profile trigger (on_auth_user_created)
+- ✅ Auto updated_at triggers on all mutable tables
+- ✅ RPC functions: get_dashboard_stats, generate_invoice_number, get_low_stock_products
+- ✅ TypeScript types updated (src/types/database.types.ts)
+- ✅ Supabase client typed with Database generic (src/lib/supabase.ts)
 
 ---
 
@@ -17,6 +65,7 @@
 5. [Inventory Workflow](#5-inventory-workflow)
 6. [Row Level Security Strategy](#6-row-level-security-strategy)
 7. [Indexing Strategy](#7-indexing-strategy)
+8. [Database Functions](#8-database-functions)
 
 ---
 
@@ -26,11 +75,12 @@
 |------------------------|-----------------------------------------------------------------------|
 | Primary Keys           | UUID (gen_random_uuid()) — globally unique, safe for distributed use  |
 | Timestamps             | All tables carry `created_at` and `updated_at` columns (auto-managed)|
-| Soft Deletes           | `deleted_at` nullable timestamp for entities with linked transactions |
 | Naming Convention      | snake_case for tables and columns                                     |
 | Referential Integrity  | Foreign keys enforced at database level                               |
-| Data Types             | NUMERIC(12,2) for monetary values; avoid FLOAT for financial data     |
+| Data Types             | NUMERIC(12,2) for monetary values — avoids FLOAT precision loss       |
 | Auth Integration       | `user_id` fields reference `auth.users.id` (Supabase Auth schema)    |
+| Stock Safety           | CHECK constraint: `stock_quantity >= 0` + trigger validation          |
+| Historical Accuracy    | `unit_price` denormalized in `*_items` tables (price-at-sale-time)   |
 
 ---
 
@@ -39,188 +89,184 @@
 ```
 auth.users (Supabase managed)
     │
-    │ (user_id FK)
-    ├──────────────────────────────────────────────────────┐
-    │                                                      │
-    ▼                                                      ▼
-products                                              customers
-    │                                                      │
-    │ (product_id FK)                                      │ (customer_id FK)
-    │                                                      │
-    ▼                                                      ▼
-purchase_items ◄──── purchases ────► suppliers       sale_items ◄──── sales
-                         │                                               │
-                         │ (supplier_id FK)                              │
-                         │                                               │
-                    suppliers                                       products
-                                                                 (product_id FK)
+    │ (1:1 trigger-created profile)
+    ▼
+public.users ────────────────────────────────────┐
+    │                                             │
+    │ user_id FK (all tables)                     │
+    │                                             │
+    ├──► products                                 │
+    │        │ (product_id FK)                    │
+    │        ├──── purchase_items                 │
+    │        └──── sale_items                     │
+    │                                             │
+    ├──► suppliers                                │
+    │        │ (supplier_id FK)                   │
+    │        └──── purchases                      │
+    │                  │ (purchase_id FK)          │
+    │                  └──── purchase_items        │
+    │                                             │
+    ├──► customers                                │
+    │        │ (customer_id FK)                   │
+    │        └──── sales                          │
+    │                  │ (sale_id FK)              │
+    │                  └──── sale_items            │
 ```
 
 ---
 
 ## 3. Table Definitions
 
-### 3.1 Table: `users` (profile extension)
+### 3.1 `users` (profile extension)
 
-**Purpose:** Stores additional profile data for authenticated users. This extends Supabase's built-in `auth.users` table and lives in the `public` schema. It acts as the ERP user record and can hold role, full name, and avatar data.
+**Purpose:** Extends Supabase `auth.users` with ERP-specific profile data. Auto-created by trigger on signup.
 
-| Column      | Type                     | Constraints              | Description                        |
-|-------------|--------------------------|---------------------------|------------------------------------|
-| id          | UUID                     | PK, FK → auth.users.id   | Mirrors Supabase auth user ID      |
-| full_name   | TEXT                     | NOT NULL                  | Display name of the user           |
-| email       | TEXT                     | NOT NULL, UNIQUE          | Email synced from auth.users       |
-| role        | TEXT                     | DEFAULT 'user'            | Future RBAC: 'admin', 'user', etc. |
-| avatar_url  | TEXT                     | NULLABLE                  | Optional profile picture URL       |
-| created_at  | TIMESTAMPTZ              | NOT NULL, DEFAULT now()   | Record creation timestamp          |
-| updated_at  | TIMESTAMPTZ              | NOT NULL, DEFAULT now()   | Last modification timestamp        |
-
-**Notes:**
-- A Supabase trigger (on `auth.users` insert) auto-creates the matching row in `public.users`.
-- The `id` column is both the primary key and a foreign key to Supabase Auth, ensuring 1:1 mapping.
+| Column     | Type        | Constraints              | Description                  |
+|------------|-------------|--------------------------|------------------------------|
+| id         | UUID        | PK, FK → auth.users.id   | Mirrors auth user ID         |
+| full_name  | TEXT        | NOT NULL, DEFAULT ''     | Display name                 |
+| email      | TEXT        | NOT NULL                 | Synced from auth.users       |
+| avatar_url | TEXT        | NULLABLE                 | Optional profile picture URL |
+| created_at | TIMESTAMPTZ | NOT NULL, DEFAULT now()  | Record creation timestamp    |
+| updated_at | TIMESTAMPTZ | NOT NULL, DEFAULT now()  | Auto-updated by trigger      |
 
 ---
 
-### 3.2 Table: `products`
+### 3.2 `products`
 
-**Purpose:** Central inventory catalog. Every item that can be bought or sold exists here. Stock quantity is managed here and updated automatically by purchase/sale database triggers.
+**Purpose:** Central inventory catalog. Every purchasable/sellable item lives here. Stock is managed by DB triggers.
 
-| Column       | Type              | Constraints              | Description                          |
-|--------------|-------------------|---------------------------|--------------------------------------|
-| id           | UUID              | PK, DEFAULT gen_random_uuid()| Unique product identifier         |
-| user_id      | UUID              | FK → auth.users.id, NOT NULL | Owner/creator of the record       |
-| name         | TEXT              | NOT NULL                  | Product display name                 |
-| sku          | TEXT              | NOT NULL, UNIQUE          | Stock Keeping Unit — unique code     |
-| description  | TEXT              | NULLABLE                  | Detailed product description         |
-| category     | TEXT              | NULLABLE                  | Product category label               |
-| unit_price   | NUMERIC(12, 2)    | NOT NULL, DEFAULT 0       | Selling price per unit               |
-| cost_price   | NUMERIC(12, 2)    | NOT NULL, DEFAULT 0       | Purchase/cost price per unit         |
-| stock_qty    | INTEGER           | NOT NULL, DEFAULT 0       | Current available stock              |
-| min_stock    | INTEGER           | NOT NULL, DEFAULT 0       | Threshold for low stock alerts       |
-| deleted_at   | TIMESTAMPTZ       | NULLABLE                  | Soft delete timestamp                |
-| created_at   | TIMESTAMPTZ       | NOT NULL, DEFAULT now()   | Record creation timestamp            |
-| updated_at   | TIMESTAMPTZ       | NOT NULL, DEFAULT now()   | Last modification timestamp          |
+| Column         | Type          | Constraints                    | Description                        |
+|----------------|---------------|--------------------------------|------------------------------------|
+| id             | UUID          | PK, DEFAULT gen_random_uuid()  | Unique product identifier          |
+| user_id        | UUID          | NOT NULL, FK → auth.users      | Record owner                       |
+| name           | TEXT          | NOT NULL                       | Product display name               |
+| sku            | TEXT          | NOT NULL                       | Stock Keeping Unit                 |
+| description    | TEXT          | NULLABLE                       | Detailed description               |
+| category       | TEXT          | NULLABLE                       | Category label                     |
+| purchase_price | NUMERIC(12,2) | NOT NULL, DEFAULT 0, >= 0      | Cost price (from supplier)         |
+| selling_price  | NUMERIC(12,2) | NOT NULL, DEFAULT 0, >= 0      | Retail price (to customer)         |
+| stock_quantity | INTEGER       | NOT NULL, DEFAULT 0, >= 0      | Current stock level                |
+| min_stock      | INTEGER       | NOT NULL, DEFAULT 0, >= 0      | Low-stock alert threshold          |
+| created_at     | TIMESTAMPTZ   | NOT NULL, DEFAULT now()        | Record creation timestamp          |
+| updated_at     | TIMESTAMPTZ   | NOT NULL, DEFAULT now()        | Auto-updated by trigger            |
 
-**Business Rules:**
-- `stock_qty` must never go negative (enforced by a CHECK constraint and sale validation logic).
-- `sku` must be globally unique per user scope.
+**Constraints:** `UNIQUE(user_id, sku)` — SKU unique per user.
 
 ---
 
-### 3.3 Table: `customers`
+### 3.3 `customers`
 
-**Purpose:** Stores all customer records. Customers are linked to sales transactions for history tracking and reporting.
+**Purpose:** Customer directory. Linked to sales for history and reporting.
 
-| Column     | Type              | Constraints                   | Description                        |
-|------------|-------------------|--------------------------------|------------------------------------|
-| id         | UUID              | PK, DEFAULT gen_random_uuid() | Unique customer identifier          |
-| user_id    | UUID              | FK → auth.users.id, NOT NULL  | Owner of the customer record        |
-| name       | TEXT              | NOT NULL                      | Full name or business name          |
-| email      | TEXT              | NULLABLE                      | Contact email                       |
-| phone      | TEXT              | NULLABLE                      | Contact phone number                |
-| address    | TEXT              | NULLABLE                      | Physical address                    |
-| notes      | TEXT              | NULLABLE                      | Additional notes about customer     |
-| deleted_at | TIMESTAMPTZ       | NULLABLE                      | Soft delete timestamp               |
-| created_at | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp           |
-| updated_at | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Last modification timestamp         |
+| Column    | Type        | Constraints                   | Description              |
+|-----------|-------------|-------------------------------|--------------------------|
+| id        | UUID        | PK, DEFAULT gen_random_uuid() | Unique customer ID       |
+| user_id   | UUID        | NOT NULL, FK → auth.users     | Record owner             |
+| name      | TEXT        | NOT NULL                      | Full name or company     |
+| email     | TEXT        | NULLABLE, CHECK format        | Contact email            |
+| phone     | TEXT        | NULLABLE                      | Contact phone            |
+| address   | TEXT        | NULLABLE                      | Physical address         |
+| notes     | TEXT        | NULLABLE                      | Internal notes           |
+| created_at| TIMESTAMPTZ | NOT NULL, DEFAULT now()       | Creation timestamp       |
+| updated_at| TIMESTAMPTZ | NOT NULL, DEFAULT now()       | Auto-updated by trigger  |
 
----
-
-### 3.4 Table: `suppliers`
-
-**Purpose:** Stores all supplier records. Suppliers are linked to purchase transactions for history tracking and reporting.
-
-| Column     | Type              | Constraints                   | Description                        |
-|------------|-------------------|--------------------------------|------------------------------------|
-| id         | UUID              | PK, DEFAULT gen_random_uuid() | Unique supplier identifier          |
-| user_id    | UUID              | FK → auth.users.id, NOT NULL  | Owner of the supplier record        |
-| name       | TEXT              | NOT NULL                      | Supplier company name               |
-| email      | TEXT              | NULLABLE                      | Contact email                       |
-| phone      | TEXT              | NULLABLE                      | Contact phone number                |
-| address    | TEXT              | NULLABLE                      | Physical address                    |
-| notes      | TEXT              | NULLABLE                      | Additional notes about supplier     |
-| deleted_at | TIMESTAMPTZ       | NULLABLE                      | Soft delete timestamp               |
-| created_at | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp           |
-| updated_at | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Last modification timestamp         |
+**Constraints:** Email CHECK validates format when non-NULL.
 
 ---
 
-### 3.5 Table: `purchases`
+### 3.4 `suppliers`
 
-**Purpose:** A purchase transaction header. Represents a complete purchase order placed with a supplier. Each purchase can contain multiple line items stored in `purchase_items`.
+**Purpose:** Supplier directory. Linked to purchases for history and reporting.
 
-| Column        | Type              | Constraints                   | Description                         |
-|---------------|-------------------|--------------------------------|-------------------------------------|
-| id            | UUID              | PK, DEFAULT gen_random_uuid() | Unique purchase identifier           |
-| user_id       | UUID              | FK → auth.users.id, NOT NULL  | Who created this purchase            |
-| supplier_id   | UUID              | FK → suppliers.id, NOT NULL   | Linked supplier for this purchase    |
-| status        | TEXT              | NOT NULL, DEFAULT 'pending'   | 'pending', 'completed', 'cancelled'  |
-| total_amount  | NUMERIC(12, 2)    | NOT NULL, DEFAULT 0           | Sum of all line item totals          |
-| notes         | TEXT              | NULLABLE                      | Optional notes or reference number   |
-| purchase_date | DATE              | NOT NULL, DEFAULT CURRENT_DATE| Date of the purchase transaction     |
-| created_at    | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp            |
-| updated_at    | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Last modification timestamp          |
-
-**Status Flow:** `pending` → `completed` (triggers stock increase) or `cancelled`
+| Column    | Type        | Constraints                   | Description              |
+|-----------|-------------|-------------------------------|--------------------------|
+| id        | UUID        | PK, DEFAULT gen_random_uuid() | Unique supplier ID       |
+| user_id   | UUID        | NOT NULL, FK → auth.users     | Record owner             |
+| name      | TEXT        | NOT NULL                      | Company name             |
+| email     | TEXT        | NULLABLE, CHECK format        | Contact email            |
+| phone     | TEXT        | NULLABLE                      | Contact phone            |
+| address   | TEXT        | NULLABLE                      | Physical address         |
+| notes     | TEXT        | NULLABLE                      | Internal notes           |
+| created_at| TIMESTAMPTZ | NOT NULL, DEFAULT now()       | Creation timestamp       |
+| updated_at| TIMESTAMPTZ | NOT NULL, DEFAULT now()       | Auto-updated by trigger  |
 
 ---
 
-### 3.6 Table: `purchase_items`
+### 3.5 `purchases`
 
-**Purpose:** Line items for a purchase. Each row represents one product type within a purchase order, specifying quantity and price agreed with the supplier at that time.
+**Purpose:** Purchase order header. One record per transaction with a supplier.
 
-| Column       | Type              | Constraints                   | Description                         |
-|--------------|-------------------|--------------------------------|-------------------------------------|
-| id           | UUID              | PK, DEFAULT gen_random_uuid() | Unique line item identifier          |
-| purchase_id  | UUID              | FK → purchases.id, NOT NULL   | Parent purchase transaction          |
-| product_id   | UUID              | FK → products.id, NOT NULL    | Product being purchased              |
-| quantity     | INTEGER           | NOT NULL, CHECK > 0           | Number of units purchased            |
-| unit_price   | NUMERIC(12, 2)    | NOT NULL                      | Price per unit at time of purchase   |
-| total_price  | NUMERIC(12, 2)    | NOT NULL                      | quantity × unit_price (computed)     |
-| created_at   | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp            |
+| Column        | Type          | Constraints                            | Description                  |
+|---------------|---------------|----------------------------------------|------------------------------|
+| id            | UUID          | PK, DEFAULT gen_random_uuid()          | Unique purchase ID           |
+| user_id       | UUID          | NOT NULL, FK → auth.users              | Record owner                 |
+| supplier_id   | UUID          | NOT NULL, FK → suppliers (RESTRICT)    | Linked supplier              |
+| status        | TEXT          | NOT NULL, DEFAULT 'pending'            | pending/completed/cancelled  |
+| total_amount  | NUMERIC(12,2) | NOT NULL, DEFAULT 0, >= 0             | Sum of line items            |
+| purchase_date | DATE          | NOT NULL, DEFAULT CURRENT_DATE         | Date of transaction          |
+| notes         | TEXT          | NULLABLE                               | Reference/notes              |
+| created_at    | TIMESTAMPTZ   | NOT NULL, DEFAULT now()                | Creation timestamp           |
+| updated_at    | TIMESTAMPTZ   | NOT NULL, DEFAULT now()                | Auto-updated by trigger      |
 
-**Notes:**
-- `unit_price` is copied from `products.cost_price` at order time but can be overridden (supplier negotiation).
-- `total_price` should be computed and stored for reporting without join overhead.
-
----
-
-### 3.7 Table: `sales`
-
-**Purpose:** A sales transaction header. Represents a completed sale made to a customer. Each sale can contain multiple line items stored in `sale_items`.
-
-| Column        | Type              | Constraints                   | Description                         |
-|---------------|-------------------|--------------------------------|-------------------------------------|
-| id            | UUID              | PK, DEFAULT gen_random_uuid() | Unique sale identifier               |
-| user_id       | UUID              | FK → auth.users.id, NOT NULL  | Who created this sale                |
-| customer_id   | UUID              | FK → customers.id, NOT NULL   | Linked customer for this sale        |
-| status        | TEXT              | NOT NULL, DEFAULT 'pending'   | 'pending', 'completed', 'cancelled'  |
-| total_amount  | NUMERIC(12, 2)    | NOT NULL, DEFAULT 0           | Sum of all line item totals          |
-| notes         | TEXT              | NULLABLE                      | Optional notes or invoice reference  |
-| sale_date     | DATE              | NOT NULL, DEFAULT CURRENT_DATE| Date of the sale transaction         |
-| created_at    | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp            |
-| updated_at    | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Last modification timestamp          |
-
-**Status Flow:** `pending` → `completed` (triggers stock decrease) or `cancelled`
+**Status Flow:** `pending` → `completed` (fires stock increase trigger) or `cancelled`
 
 ---
 
-### 3.8 Table: `sale_items`
+### 3.6 `purchase_items`
 
-**Purpose:** Line items for a sale. Each row represents one product type within a sale order, specifying quantity and selling price.
+**Purpose:** Line items within a purchase order. Each row = one product type purchased.
 
-| Column      | Type              | Constraints                   | Description                         |
-|-------------|-------------------|--------------------------------|-------------------------------------|
-| id          | UUID              | PK, DEFAULT gen_random_uuid() | Unique line item identifier          |
-| sale_id     | UUID              | FK → sales.id, NOT NULL       | Parent sale transaction              |
-| product_id  | UUID              | FK → products.id, NOT NULL    | Product being sold                   |
-| quantity    | INTEGER           | NOT NULL, CHECK > 0           | Number of units sold                 |
-| unit_price  | NUMERIC(12, 2)    | NOT NULL                      | Selling price per unit at sale time  |
-| total_price | NUMERIC(12, 2)    | NOT NULL                      | quantity × unit_price (computed)     |
-| created_at  | TIMESTAMPTZ       | NOT NULL, DEFAULT now()       | Record creation timestamp            |
+| Column      | Type          | Constraints                         | Description                     |
+|-------------|---------------|-------------------------------------|---------------------------------|
+| id          | UUID          | PK, DEFAULT gen_random_uuid()       | Unique line item ID             |
+| purchase_id | UUID          | NOT NULL, FK → purchases (CASCADE)  | Parent purchase                 |
+| product_id  | UUID          | NOT NULL, FK → products (RESTRICT)  | Product being purchased         |
+| quantity    | INTEGER       | NOT NULL, CHECK > 0                 | Units purchased                 |
+| unit_price  | NUMERIC(12,2) | NOT NULL, CHECK >= 0               | Price at purchase time          |
+| total_price | NUMERIC(12,2) | NOT NULL, CHECK >= 0               | quantity × unit_price           |
+| created_at  | TIMESTAMPTZ   | NOT NULL, DEFAULT now()             | Creation timestamp              |
 
-**Notes:**
-- `unit_price` is copied from `products.unit_price` at sale time and stored to preserve historical accuracy.
-- Even if the product price changes later, old sale records retain the original sale price.
+**Note:** `unit_price` is a historical snapshot — reflects price agreed at purchase time.
+
+---
+
+### 3.7 `sales`
+
+**Purpose:** Sales order header. One record per transaction with a customer.
+
+| Column         | Type          | Constraints                            | Description                  |
+|----------------|---------------|----------------------------------------|------------------------------|
+| id             | UUID          | PK, DEFAULT gen_random_uuid()          | Unique sale ID               |
+| user_id        | UUID          | NOT NULL, FK → auth.users              | Record owner                 |
+| customer_id    | UUID          | NOT NULL, FK → customers (RESTRICT)    | Linked customer              |
+| invoice_number | TEXT          | NOT NULL, UNIQUE(user_id, invoice)     | Human-readable invoice ID    |
+| status         | TEXT          | NOT NULL, DEFAULT 'pending'            | pending/completed/cancelled  |
+| total_amount   | NUMERIC(12,2) | NOT NULL, DEFAULT 0, >= 0             | Sum of line items            |
+| sale_date      | DATE          | NOT NULL, DEFAULT CURRENT_DATE         | Date of transaction          |
+| notes          | TEXT          | NULLABLE                               | Reference/notes              |
+| created_at     | TIMESTAMPTZ   | NOT NULL, DEFAULT now()                | Creation timestamp           |
+| updated_at     | TIMESTAMPTZ   | NOT NULL, DEFAULT now()                | Auto-updated by trigger      |
+
+**Status Flow:** `pending` → `completed` (fires stock decrease trigger) or `cancelled`
+
+---
+
+### 3.8 `sale_items`
+
+**Purpose:** Line items within a sale order. Each row = one product type sold.
+
+| Column      | Type          | Constraints                       | Description                   |
+|-------------|---------------|-----------------------------------|-------------------------------|
+| id          | UUID          | PK, DEFAULT gen_random_uuid()     | Unique line item ID           |
+| sale_id     | UUID          | NOT NULL, FK → sales (CASCADE)    | Parent sale                   |
+| product_id  | UUID          | NOT NULL, FK → products (RESTRICT)| Product being sold            |
+| quantity    | INTEGER       | NOT NULL, CHECK > 0               | Units sold                    |
+| unit_price  | NUMERIC(12,2) | NOT NULL, CHECK >= 0             | Price at sale time            |
+| total_price | NUMERIC(12,2) | NOT NULL, CHECK >= 0             | quantity × unit_price         |
+| created_at  | TIMESTAMPTZ   | NOT NULL, DEFAULT now()           | Creation timestamp            |
+
+**Note:** `unit_price` is a historical snapshot — preserves the price at time of sale.
 
 ---
 
@@ -228,48 +274,47 @@ purchase_items ◄──── purchases ────► suppliers       sale_it
 
 ```
 ┌─────────────┐         ┌──────────────┐         ┌─────────────┐
-│  auth.users │────1:1──│    users     │          │  suppliers  │
-└─────────────┘         └──────────────┘          └──────┬──────┘
-                               │                         │
-                               │ 1:N                     │ 1:N
+│  auth.users │────1:1──│  users       │          │  suppliers  │
+└─────────────┘         └──────┬───────┘          └──────┬──────┘
+                               │ user_id FK              │
+                               │ (all tables)            │ 1:N
                         ┌──────▼──────┐          ┌───────▼──────┐
                         │  products   │          │   purchases   │
                         └──────┬──────┘          └───────┬───────┘
-                               │                         │
-                               │ 1:N                     │ 1:N
-                        ┌──────▼──────────────────►──────▼────────┐
-                        │          purchase_items                  │
-                        └──────────────────────────────────────────┘
+                               │                         │ 1:N
+                               │ N:1              ┌──────▼─────────┐
+                               └──────────────────► purchase_items  │
+                                                  └────────────────┘
 
-                        ┌──────────────┐         ┌─────────────┐
-                        │  customers   │          │    sales    │
-                        └──────┬───────┘          └──────┬──────┘
-                               │ 1:N                     │ 1:N
-                        ┌──────▼──────────────────►──────▼────────┐
-                        │            sale_items                    │
-                        └──────────────────────────────────────────┘
-
-                        ┌──────────────┐
-                        │  products    │◄───── sale_items.product_id (N:1)
-                        └──────────────┘◄───── purchase_items.product_id (N:1)
+┌─────────────────┐
+│   customers     │
+└────────┬────────┘
+         │ 1:N
+  ┌──────▼──────┐
+  │    sales    │
+  └──────┬──────┘
+         │ 1:N
+  ┌──────▼───────────┐
+  │   sale_items     │◄─── products (N:1)
+  └──────────────────┘
 ```
 
-### Cardinality Summary
+### Cascade Rules
 
-| Relationship                          | Type |
-|---------------------------------------|------|
-| auth.users → users                    | 1:1  |
-| users → products                      | 1:N  |
-| users → customers                     | 1:N  |
-| users → suppliers                     | 1:N  |
-| users → purchases                     | 1:N  |
-| users → sales                         | 1:N  |
-| suppliers → purchases                 | 1:N  |
-| purchases → purchase_items            | 1:N  |
-| products → purchase_items             | 1:N  |
-| customers → sales                     | 1:N  |
-| sales → sale_items                    | 1:N  |
-| products → sale_items                 | 1:N  |
+| FK Relationship | ON DELETE |
+|-----------------|-----------|
+| users.id → auth.users.id | CASCADE (profile deleted with auth user) |
+| products.user_id → auth.users.id | CASCADE |
+| customers.user_id → auth.users.id | CASCADE |
+| suppliers.user_id → auth.users.id | CASCADE |
+| purchases.user_id → auth.users.id | CASCADE |
+| purchases.supplier_id → suppliers.id | **RESTRICT** (protect history) |
+| purchase_items.purchase_id → purchases.id | CASCADE (items deleted with order) |
+| purchase_items.product_id → products.id | **RESTRICT** (protect history) |
+| sales.user_id → auth.users.id | CASCADE |
+| sales.customer_id → customers.id | **RESTRICT** (protect history) |
+| sale_items.sale_id → sales.id | CASCADE (items deleted with order) |
+| sale_items.product_id → products.id | **RESTRICT** (protect history) |
 
 ---
 
@@ -278,103 +323,179 @@ purchase_items ◄──── purchases ────► suppliers       sale_it
 ### 5.1 Purchase Completion — Stock Increase
 
 ```
-User marks purchase as 'completed'
-           │
-           ▼
-Supabase DB trigger fires on: purchases.status = 'completed'
-           │
-           ▼
-For each row in purchase_items WHERE purchase_id = [this purchase]:
+User marks purchase status → 'completed'
+            │
+            ▼
+DB Trigger: on_purchase_completed fires
+  (AFTER UPDATE OF status ON purchases)
+            │
+            ▼
+For each purchase_item in this purchase:
     UPDATE products
-    SET stock_qty = stock_qty + purchase_items.quantity
-    WHERE products.id = purchase_items.product_id
-           │
-           ▼
-Stock quantity increased. Purchase record locked (immutable).
+    SET stock_quantity = stock_quantity + purchase_item.quantity
+    WHERE products.id = purchase_item.product_id
+            │
+            ▼
+✅ Stock increased atomically.
+   All items updated in one DB operation.
 ```
+
+**Function:** `increase_stock_on_purchase_complete()` — SECURITY DEFINER, bypasses RLS.
+
+---
 
 ### 5.2 Sale Completion — Stock Decrease
 
 ```
-User submits a new sale
-           │
-           ▼
-Pre-sale validation (application layer + DB constraint):
-    For each sale item:
-        IF products.stock_qty < sale_items.quantity THEN
-            RAISE ERROR: 'Insufficient stock for [product_name]'
-           │
-           ▼
-Sale record created with status 'pending'
-           │
-           ▼
-User confirms/completes the sale
-           │
-           ▼
-Supabase DB trigger fires on: sales.status = 'completed'
-           │
-           ▼
-For each row in sale_items WHERE sale_id = [this sale]:
-    UPDATE products
-    SET stock_qty = stock_qty - sale_items.quantity
-    WHERE products.id = sale_items.product_id
-           │
-           ▼
-Stock quantity decreased. Sale record locked (immutable).
+User marks sale status → 'completed'
+            │
+            ▼
+DB Trigger: on_sale_completed fires
+  (AFTER UPDATE OF status ON sales)
+            │
+            ▼
+Step 1: VALIDATE all items
+  FOR each sale_item:
+    IF products.stock_quantity < sale_item.quantity THEN
+      ❌ RAISE EXCEPTION 'Insufficient stock for [product_name]'
+         Transaction ROLLS BACK — sale stays 'pending'
+            │
+            ▼  (only if all validations pass)
+Step 2: DEDUCT stock
+  UPDATE products
+  SET stock_quantity = stock_quantity - sale_item.quantity
+  WHERE products.id = sale_item.product_id
+            │
+            ▼
+✅ Stock decreased atomically.
+   ERRCODE: P0001 returned to application on failure.
 ```
+
+**Function:** `decrease_stock_on_sale_complete()` — SECURITY DEFINER, validates then deducts.
+
+---
 
 ### 5.3 Stock Safety Rules
 
-| Rule                                  | Enforcement Method                       |
-|---------------------------------------|------------------------------------------|
-| stock_qty cannot be negative           | DB CHECK constraint + app validation     |
-| Completed transactions are immutable   | Application logic + RLS policy           |
-| Historical prices preserved in items   | Denormalized unit_price in *_items tables|
-| Cancelled transactions don't affect stock | Status check in DB trigger            |
+| Rule | Enforcement |
+|------|-------------|
+| stock_quantity cannot be negative | DB CHECK constraint |
+| Pre-sale stock validation | Trigger raises EXCEPTION before deducting |
+| Failed validation rolls back | PostgreSQL transaction atomicity |
+| Historical prices preserved | unit_price denormalized in *_items tables |
 
 ---
 
 ## 6. Row Level Security Strategy
 
-All tables in the `public` schema will have RLS enabled. The core policy is:
+> **Core Policy:** Every user can only see and modify their own data.  
+> `auth.uid()` is matched against `user_id` on every operation.
 
-> **Every user can only see and modify their own data.**
+### Direct Tables (products, customers, suppliers, purchases, sales)
 
-### RLS Policy Pattern (per table)
+```sql
+-- Pattern applied to all 5 direct tables:
+USING (auth.uid() = user_id)
+WITH CHECK (auth.uid() = user_id)
+```
 
-| Policy Name           | Operation | Condition                                 |
-|-----------------------|-----------|-------------------------------------------|
-| select_own_data       | SELECT    | auth.uid() = user_id                      |
-| insert_own_data       | INSERT    | auth.uid() = user_id                      |
-| update_own_data       | UPDATE    | auth.uid() = user_id                      |
-| delete_own_data       | DELETE    | auth.uid() = user_id                      |
+### Child Tables (purchase_items, sale_items)
 
-### Special Cases
+These tables don't carry `user_id` — ownership is verified via parent JOIN:
 
-- **purchase_items / sale_items:** These tables link to purchases/sales which carry `user_id`. RLS for these child tables checks ownership via a JOIN to the parent table.
-- **users (profile):** Users can only read and update their own profile row. Admin roles will override this in Phase 2.
-- **Database Functions:** Functions performing stock updates must run with `SECURITY DEFINER` to bypass RLS where needed (e.g., updating `stock_qty` atomically during trigger execution).
+```sql
+-- purchase_items example:
+USING (
+    EXISTS (
+        SELECT 1 FROM public.purchases p
+        WHERE p.id = purchase_items.purchase_id
+          AND p.user_id = auth.uid()
+    )
+)
+```
+
+### users Table (profile)
+
+```sql
+-- Users can only read/update their own profile row:
+USING (auth.uid() = id)
+```
+
+### Database Functions
+
+All functions that perform stock updates use `SECURITY DEFINER` to bypass RLS atomically:
+
+| Function | SECURITY DEFINER | Reason |
+|----------|-----------------|--------|
+| `handle_new_user()` | ✅ | Writes public.users from auth schema |
+| `increase_stock_on_purchase_complete()` | ✅ | Updates products across user boundary |
+| `decrease_stock_on_sale_complete()` | ✅ | Updates products across user boundary |
+| `get_dashboard_stats()` | ✅ | Aggregates across multiple tables |
+| `generate_invoice_number()` | ✅ | Counts existing sales for uniqueness |
+| `get_low_stock_products()` | ✅ | Returns cross-table data efficiently |
+
+All SECURITY DEFINER functions explicitly filter by `auth.uid()` to prevent data leakage.
 
 ---
 
 ## 7. Indexing Strategy
 
-Well-planned indexes minimize query time for the most common ERP operations.
+| Table          | Index Name                        | Column(s)       | Reason                               |
+|----------------|-----------------------------------|-----------------|--------------------------------------|
+| products       | idx_products_user_id              | user_id         | All product queries filter by owner  |
+| products       | idx_products_name                 | name            | Search / sort by name                |
+| products       | idx_products_sku                  | sku             | Fast SKU lookup                      |
+| products       | idx_products_category             | category        | Filter by category                   |
+| customers      | idx_customers_user_id             | user_id         | All customer queries filter by owner |
+| customers      | idx_customers_name                | name            | Search / sort by name                |
+| customers      | idx_customers_phone               | phone           | Phone lookup                         |
+| customers      | idx_customers_email               | email           | Email lookup                         |
+| suppliers      | idx_suppliers_user_id             | user_id         | All supplier queries filter by owner |
+| suppliers      | idx_suppliers_name                | name            | Search / sort by name                |
+| suppliers      | idx_suppliers_phone               | phone           | Phone lookup                         |
+| purchases      | idx_purchases_user_id             | user_id         | Filter purchases by owner            |
+| purchases      | idx_purchases_supplier_id         | supplier_id     | Join to suppliers                    |
+| purchases      | idx_purchases_status              | status          | Filter by status                     |
+| purchases      | idx_purchases_purchase_date       | purchase_date DESC | Date-range queries, recent first  |
+| purchase_items | idx_purchase_items_purchase_id    | purchase_id     | Fetch all items for a purchase       |
+| purchase_items | idx_purchase_items_product_id     | product_id      | Inventory trigger + product history  |
+| sales          | idx_sales_user_id                 | user_id         | Filter sales by owner                |
+| sales          | idx_sales_customer_id             | customer_id     | Join to customers                    |
+| sales          | idx_sales_status                  | status          | Filter by status                     |
+| sales          | idx_sales_sale_date               | sale_date DESC  | Date-range queries, recent first     |
+| sale_items     | idx_sale_items_sale_id            | sale_id         | Fetch all items for a sale           |
+| sale_items     | idx_sale_items_product_id         | product_id      | Stock trigger + product history      |
 
-| Table          | Indexed Column(s)                | Reason                                      |
-|----------------|----------------------------------|---------------------------------------------|
-| products       | user_id                          | All product queries filter by owner          |
-| products       | sku                              | Unique constraint; fast lookup               |
-| products       | name (text search)               | Product search functionality                 |
-| customers      | user_id                          | All customer queries filter by owner         |
-| suppliers      | user_id                          | All supplier queries filter by owner         |
-| purchases      | user_id                          | Filter purchases by owner                    |
-| purchases      | supplier_id                      | Join to suppliers table                      |
-| purchases      | status                           | Filter by pending/completed/cancelled        |
-| purchase_items | purchase_id                      | Fetch all items for a purchase               |
-| purchase_items | product_id                       | Inventory updates; product history           |
-| sales          | user_id                          | Filter sales by owner                        |
-| sales          | customer_id                      | Join to customers table                      |
-| sales          | status                           | Filter by pending/completed/cancelled        |
-| sale_items     | sale_id                          | Fetch all items for a sale                   |
-| sale_items     | product_id                       | Stock management; product history            |
+**Total: 22 indexes** (including 2 from UNIQUE constraints: `products_user_sku_unique`, `sales_user_invoice_unique`)
+
+---
+
+## 8. Database Functions
+
+### `get_dashboard_stats()` → RPC
+
+Called via `supabase.rpc('get_dashboard_stats')`. Returns KPI aggregates in a single round trip.
+
+```typescript
+const { data } = await supabase.rpc('get_dashboard_stats');
+// Returns: { total_products, total_customers, total_suppliers,
+//            total_purchases, total_sales, total_revenue }
+```
+
+### `generate_invoice_number()` → RPC
+
+Generates unique invoice number: `INV-YYYYMMDD-NNNN`.
+
+```typescript
+const { data: invoiceNo } = await supabase.rpc('generate_invoice_number');
+// Returns: "INV-20260707-0001"
+```
+
+### `get_low_stock_products()` → RPC
+
+Returns products where `stock_quantity <= min_stock`.
+
+```typescript
+const { data } = await supabase.rpc('get_low_stock_products');
+// Returns: Array<{ id, name, sku, category, stock_quantity, min_stock, selling_price }>
+```
