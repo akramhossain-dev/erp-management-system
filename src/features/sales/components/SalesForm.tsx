@@ -72,7 +72,7 @@ export function SalesForm({
 
   const selectClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 px-3 rounded-xl text-body-sm text-text-primary appearance-none pr-8 cursor-pointer",
+      "w-full h-10 pl-5 pr-11 rounded-xl text-body text-text-primary appearance-none cursor-pointer",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -81,7 +81,7 @@ export function SalesForm({
 
   const inputClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 px-3 rounded-xl text-body-sm text-text-primary",
+      "w-full h-10 px-5 rounded-xl text-body text-text-primary",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -136,7 +136,7 @@ export function SalesForm({
                         </option>
                       ))}
                     </select>
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="6 9 12 15 18 9"/>
                       </svg>
@@ -180,7 +180,7 @@ export function SalesForm({
                     placeholder="Optional details, billing footnotes, reference codes..."
                     {...register("notes")}
                     className={cn(
-                      "w-full px-3 py-2.5 rounded-xl text-body-sm text-text-primary resize-none",
+                      "w-full px-5 py-3 rounded-xl text-body text-text-primary resize-none",
                       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all border-white/10 focus:border-primary-500/60",
                     )}
                     style={{ background: "rgba(255,255,255,0.04)" }}

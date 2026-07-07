@@ -46,11 +46,13 @@ function FilterSelect<T extends string>({
         value={value}
         onChange={(e) => onChange(e.target.value as T)}
         className={cn(
-          "h-9 pl-3 pr-8 rounded-xl text-body-sm appearance-none cursor-pointer w-full",
+          "h-10 rounded-xl text-body appearance-none cursor-pointer w-full",
           "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50",
           "text-text-secondary",
         )}
         style={{
+          paddingLeft: "1.25rem",
+          paddingRight: "2.75rem",
           background:  "rgba(255,255,255,0.04)",
           border:      "1px solid var(--border-subtle)",
           color:       value !== options[0].value ? "var(--text-primary)" : "var(--text-tertiary)",
@@ -68,7 +70,7 @@ function FilterSelect<T extends string>({
         ))}
       </select>
       {/* Chevron icon */}
-      <div className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none">
+      <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <polyline points="6 9 12 15 18 9"/>
         </svg>
@@ -108,7 +110,7 @@ export function ProductFilters({
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">
       {/* Search input */}
       <div className="relative flex-1 min-w-[200px] max-w-sm">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="8"/>
             <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -121,8 +123,10 @@ export function ProductFilters({
           placeholder="Search by name or SKU…"
           value={filters.search}
           onChange={(e) => onUpdateFilters({ search: e.target.value })}
-          className="pl-9 h-9 text-body-sm"
+          className="h-10 text-body"
           style={{
+            paddingLeft:  "2.75rem",
+            paddingRight: "1.25rem",
             background:   "rgba(255,255,255,0.04)",
             border:       "1px solid var(--border-subtle)",
             borderRadius: "0.75rem",
@@ -176,9 +180,8 @@ export function ProductFilters({
         <Button
           id="product-filter-reset-btn"
           variant="ghost"
-          size="sm"
           onClick={onReset}
-          className="h-9 px-3 text-body-sm text-text-muted hover:text-text-secondary gap-1.5"
+          className="h-10 px-4 text-body text-text-muted hover:text-text-secondary gap-1.5"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>

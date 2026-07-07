@@ -37,12 +37,12 @@ export function PurchaseItemRow({
   };
 
   const selectClass = cn(
-    "w-full h-10 px-3 rounded-xl text-body-sm text-text-primary appearance-none pr-8 cursor-pointer",
+    "w-full h-10 pl-5 pr-11 rounded-xl text-body text-text-primary appearance-none cursor-pointer",
     "bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
   );
 
   const inputClass = cn(
-    "w-full h-10 px-3 rounded-xl text-body-sm text-text-primary",
+    "w-full h-10 px-5 rounded-xl text-body text-text-primary",
     "bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
     "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
   );
@@ -67,7 +67,7 @@ export function PurchaseItemRow({
               </option>
             ))}
           </select>
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
@@ -79,7 +79,7 @@ export function PurchaseItemRow({
       <div className="md:col-span-3 flex flex-col gap-1.5">
         <label className="text-caption text-text-secondary font-medium">Cost Price</label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-body-sm text-text-muted" aria-hidden="true">৳</span>
+          <span className="absolute left-4 top-1/2 -translate-y-1/2 text-body text-text-muted" aria-hidden="true">৳</span>
           <input
             id={`items-${index}-price`}
             type="number"
@@ -87,8 +87,8 @@ export function PurchaseItemRow({
             min="0"
             placeholder="0.00"
             {...register(`items.${index}.unit_price`, { valueAsNumber: true })}
-            className={cn(inputClass, "pl-7")}
-            style={{ background: "rgba(255,255,255,0.04)" }}
+            className={cn(inputClass)}
+            style={{ paddingLeft: "2.25rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
           />
         </div>
       </div>

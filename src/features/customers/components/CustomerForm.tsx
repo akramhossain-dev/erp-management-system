@@ -93,7 +93,7 @@ export function CustomerForm({
 
   const inputClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 px-3 rounded-xl text-body-sm text-text-primary",
+      "w-full h-10 px-5 rounded-xl text-body text-text-primary",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -186,7 +186,7 @@ export function CustomerForm({
                 aria-describedby={errors.notes ? "notes-error" : undefined}
                 aria-invalid={!!errors.notes}
                 className={cn(
-                  "w-full px-3 py-2.5 rounded-xl text-body-sm text-text-primary resize-none",
+                  "w-full px-5 py-3 rounded-xl text-body text-text-primary resize-none",
                   "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
                   errors.notes
                     ? "border-danger-400/60 focus:ring-danger-400/30"

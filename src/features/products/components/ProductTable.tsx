@@ -290,17 +290,14 @@ export function ProductTable({
 
   return (
     <>
-      <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ border: "1px solid var(--border-subtle)" }}
-      >
+      <div className="erp-table-wrap relative overflow-hidden">
         {/* Fetching overlay — subtle opacity change */}
         {isFetching && !isLoading && (
           <div className="absolute inset-0 pointer-events-none z-10 bg-black/10 transition-opacity" aria-hidden="true" />
         )}
 
         <div className="overflow-x-auto">
-          <table className="w-full" aria-label="Products list">
+          <table className="erp-table w-full text-left border-collapse" aria-label="Products list">
             <thead>
               <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid var(--border-subtle)" }}>
                 {HEADERS.map((h) => (
@@ -308,7 +305,7 @@ export function ProductTable({
                     key={h}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
+                      "px-5 py-4 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
                       h === "Category"       && "hidden md:table-cell",
                       h === "Purchase Price" && "hidden lg:table-cell",
                       h === "Selling Price"  && "hidden lg:table-cell",
@@ -331,7 +328,7 @@ export function ProductTable({
                     className="hover:bg-white/2 transition-colors duration-100 group"
                   >
                     {/* Name + SKU */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <div className="flex flex-col">
                         <span className="text-body-sm text-text-primary font-medium group-hover:text-primary-300 transition-colors">
                           {product.name}
@@ -341,7 +338,7 @@ export function ProductTable({
                     </td>
 
                     {/* Category */}
-                    <td className="px-4 py-3 hidden md:table-cell">
+                    <td className="px-5 py-4 hidden md:table-cell">
                       {product.category ? (
                         <Badge
                           variant="outline"
@@ -356,21 +353,21 @@ export function ProductTable({
                     </td>
 
                     {/* Purchase Price */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       <span className="text-body-sm text-text-secondary font-mono">
                         {formatCurrency(Number(product.purchase_price))}
                       </span>
                     </td>
 
                     {/* Selling Price */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       <span className="text-body-sm text-text-primary font-mono font-medium">
                         {formatCurrency(Number(product.selling_price))}
                       </span>
                     </td>
 
                     {/* Stock */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <StockBadge
                         qty={Number(product.stock_quantity)}
                         minStock={Number(product.min_stock)}
@@ -378,7 +375,7 @@ export function ProductTable({
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <RowActions
                         product={product}
                         onDeleteClick={setDeleteTarget}

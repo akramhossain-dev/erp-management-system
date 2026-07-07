@@ -182,16 +182,13 @@ export function SalesTable({
 
   return (
     <>
-      <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ border: "1px solid var(--border-subtle)" }}
-      >
+      <div className="erp-table-wrap relative overflow-hidden">
         {isFetching && !isLoading && (
           <div className="absolute inset-0 pointer-events-none z-10 bg-black/10 transition-opacity" aria-hidden="true" />
         )}
 
         <div className="overflow-x-auto">
-          <table className="w-full" aria-label="Sales invoices list">
+          <table className="erp-table w-full" aria-label="Sales invoices list">
             <thead>
               <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid var(--border-subtle)" }}>
                 {HEADERS.map((h) => (
@@ -199,7 +196,7 @@ export function SalesTable({
                     key={h}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
+                      "px-5 py-4 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
                       h === "Total Amount" && "hidden sm:table-cell",
                       h === "Date"         && "hidden md:table-cell",
                       h === "Status"       && "hidden lg:table-cell",
@@ -222,46 +219,46 @@ export function SalesTable({
                     className="hover:bg-white/2 transition-colors duration-100 group"
                   >
                     {/* Invoice Number */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <span className="text-body-sm text-text-primary font-mono font-medium group-hover:text-primary-300 transition-colors">
                         {s.invoice_number}
                       </span>
                     </td>
 
                     {/* Customer */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <span className="text-body-sm text-text-primary">
                         {s.customer?.name ?? "Unknown"}
                       </span>
                     </td>
 
                     {/* Total Amount */}
-                    <td className="px-4 py-3 hidden sm:table-cell">
+                    <td className="px-5 py-4 hidden sm:table-cell">
                       <span className="text-body-sm text-text-primary font-mono font-semibold">
                         {formatCurrency(Number(s.total_amount))}
                       </span>
                     </td>
 
                     {/* Date */}
-                    <td className="px-4 py-3 hidden md:table-cell">
+                    <td className="px-5 py-4 hidden md:table-cell">
                       <span className="text-body-sm text-text-secondary">{formatDate(s.sale_date)}</span>
                     </td>
 
                     {/* Status */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       <span
-                        className="inline-flex items-center text-caption font-semibold px-2 py-0.5 rounded-full"
+                        className="inline-flex items-center text-caption font-semibold px-2.5 py-1 rounded-full"
                         style={{
                           background: s.status === "completed" ? "rgba(16,185,129,0.12)" : "rgba(245,158,11,0.12)",
                           color:      s.status === "completed" ? "var(--success-400)" : "var(--warning-400)",
                         }}
                       >
-                        {s.status}
+                        {s.status.toUpperCase()}
                       </span>
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5">
                         <Button
                           id={`sale-view-${s.id}`}
@@ -270,7 +267,7 @@ export function SalesTable({
                           onClick={() => navigate(`${ROUTES.SALES}/${s.id}`)}
                           className="h-7 px-2.5 text-caption text-text-tertiary hover:text-primary-400 hover:bg-primary-500/10"
                         >
-                          View Invoice
+                          View Details
                         </Button>
                         <Button
                           id={`sale-delete-${s.id}`}

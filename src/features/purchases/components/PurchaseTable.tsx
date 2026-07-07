@@ -183,16 +183,13 @@ export function PurchaseTable({
 
   return (
     <>
-      <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ border: "1px solid var(--border-subtle)" }}
-      >
+      <div className="erp-table-wrap relative overflow-hidden">
         {isFetching && !isLoading && (
           <div className="absolute inset-0 pointer-events-none z-10 bg-black/10 transition-opacity" aria-hidden="true" />
         )}
 
         <div className="overflow-x-auto">
-          <table className="w-full" aria-label="Purchases list">
+          <table className="erp-table w-full" aria-label="Purchases list">
             <thead>
               <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid var(--border-subtle)" }}>
                 {HEADERS.map((h) => (
@@ -200,7 +197,7 @@ export function PurchaseTable({
                     key={h}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
+                      "px-5 py-4 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
                       h === "Total Amount" && "hidden sm:table-cell",
                       h === "Date"         && "hidden md:table-cell",
                       h === "Created By"   && "hidden lg:table-cell",
@@ -223,38 +220,38 @@ export function PurchaseTable({
                     className="hover:bg-white/2 transition-colors duration-100 group"
                   >
                     {/* Purchase ID */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <span className="text-body-sm text-text-primary font-mono font-medium group-hover:text-primary-300 transition-colors">
                         PO-{p.id.substring(0, 8).toUpperCase()}
                       </span>
                     </td>
 
                     {/* Supplier */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <span className="text-body-sm text-text-primary">
                         {p.supplier?.name ?? "Unknown"}
                       </span>
                     </td>
 
                     {/* Total Amount */}
-                    <td className="px-4 py-3 hidden sm:table-cell">
+                    <td className="px-5 py-4 hidden sm:table-cell">
                       <span className="text-body-sm text-text-primary font-mono font-semibold">
                         {formatCurrency(Number(p.total_amount))}
                       </span>
                     </td>
 
                     {/* Date */}
-                    <td className="px-4 py-3 hidden md:table-cell">
+                    <td className="px-5 py-4 hidden md:table-cell">
                       <span className="text-body-sm text-text-secondary">{formatDate(p.purchase_date)}</span>
                     </td>
 
                     {/* Created By */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       <span className="text-body-sm text-text-tertiary">Me</span>
                     </td>
 
                     {/* Actions */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <div className="flex items-center gap-1.5">
                         <Button
                           id={`purchase-view-${p.id}`}

@@ -184,16 +184,13 @@ export function CustomerTable({
 
   return (
     <>
-      <div
-        className="relative overflow-hidden rounded-2xl"
-        style={{ border: "1px solid var(--border-subtle)" }}
-      >
+      <div className="erp-table-wrap relative overflow-hidden">
         {isFetching && !isLoading && (
           <div className="absolute inset-0 pointer-events-none z-10 bg-black/10 transition-opacity" aria-hidden="true" />
         )}
 
         <div className="overflow-x-auto">
-          <table className="w-full" aria-label="Customers list">
+          <table className="erp-table w-full text-left border-collapse" aria-label="Customers list">
             <thead>
               <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid var(--border-subtle)" }}>
                 {HEADERS.map((h) => (
@@ -201,7 +198,7 @@ export function CustomerTable({
                     key={h}
                     scope="col"
                     className={cn(
-                      "px-4 py-3 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
+                      "px-5 py-4 text-left text-caption text-text-muted font-semibold uppercase tracking-wider",
                       h === "Email"        && "hidden md:table-cell",
                       h === "Phone"        && "hidden sm:table-cell",
                       h === "Address"      && "hidden lg:table-cell",
@@ -225,29 +222,29 @@ export function CustomerTable({
                     className="hover:bg-white/2 transition-colors duration-100 group"
                   >
                     {/* Name */}
-                    <td className="px-4 py-3">
+                    <td className="px-5 py-4">
                       <span className="text-body-sm text-text-primary font-medium group-hover:text-primary-300 transition-colors">
                         {c.name}
                       </span>
                     </td>
 
                     {/* Email */}
-                    <td className="px-4 py-3 hidden md:table-cell">
+                    <td className="px-5 py-4 hidden md:table-cell">
                       <span className="text-body-sm text-text-secondary">{c.email ?? "—"}</span>
                     </td>
 
                     {/* Phone */}
-                    <td className="px-4 py-3 hidden sm:table-cell">
+                    <td className="px-5 py-4 hidden sm:table-cell">
                       <span className="text-body-sm text-text-secondary font-mono">{c.phone ?? "—"}</span>
                     </td>
 
                     {/* Address */}
-                    <td className="px-4 py-3 hidden lg:table-cell">
+                    <td className="px-5 py-4 hidden lg:table-cell">
                       <span className="text-body-sm text-text-tertiary truncate block max-w-xs">{c.address ?? "—"}</span>
                     </td>
 
                     {/* Created Date */}
-                    <td className="px-4 py-3 hidden xl:table-cell">
+                    <td className="px-5 py-4 hidden xl:table-cell">
                       <span className="text-body-sm text-text-tertiary">{formatDate(c.created_at)}</span>
                     </td>
 
