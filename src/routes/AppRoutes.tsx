@@ -9,6 +9,13 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { ProductsPage }   from "@/pages/products/ProductsPage";
 import { ProductNewPage } from "@/pages/products/ProductNewPage";
 import { ProductEditPage } from "@/pages/products/ProductEditPage";
+// ─── Phase 6: Customer & Supplier pages ─────────────────────────────────────
+import { CustomersPage } from "@/pages/customers/CustomersPage";
+import { CustomerNewPage } from "@/pages/customers/CustomerNewPage";
+import { CustomerEditPage } from "@/pages/customers/CustomerEditPage";
+import { SuppliersPage } from "@/pages/suppliers/SuppliersPage";
+import { SupplierNewPage } from "@/pages/suppliers/SupplierNewPage";
+import { SupplierEditPage } from "@/pages/suppliers/SupplierEditPage";
 import { ROUTES } from "@/utils/constants";
 
 // ─── Placeholder for Phase 4+ pages ──────────────────────────────────────────
@@ -63,15 +70,15 @@ export function AppRoutes() {
         <Route path={ROUTES.PRODUCTS_NEW} element={<ProductNewPage />} />
         <Route path="/products/:id/edit"  element={<ProductEditPage />} />
 
-        {/* Customers — Phase 4 */}
-        <Route path={ROUTES.CUSTOMERS}     element={<ComingSoonPage title="Customers" />} />
-        <Route path={ROUTES.CUSTOMERS_NEW} element={<ComingSoonPage title="New Customer" />} />
-        <Route path="/customers/:id/edit"  element={<ComingSoonPage title="Edit Customer" />} />
+        {/* Customers — Phase 6 ✅ */}
+        <Route path={ROUTES.CUSTOMERS}     element={<CustomersPage />} />
+        <Route path={ROUTES.CUSTOMERS_NEW} element={<CustomerNewPage />} />
+        <Route path="/customers/:id/edit"  element={<CustomerEditPage />} />
 
-        {/* Suppliers — Phase 4 */}
-        <Route path={ROUTES.SUPPLIERS}     element={<ComingSoonPage title="Suppliers" />} />
-        <Route path={ROUTES.SUPPLIERS_NEW} element={<ComingSoonPage title="New Supplier" />} />
-        <Route path="/suppliers/:id/edit"  element={<ComingSoonPage title="Edit Supplier" />} />
+        {/* Suppliers — Phase 6 ✅ */}
+        <Route path={ROUTES.SUPPLIERS}     element={<SuppliersPage />} />
+        <Route path={ROUTES.SUPPLIERS_NEW} element={<SupplierNewPage />} />
+        <Route path="/suppliers/:id/edit"  element={<SupplierEditPage />} />
 
         {/* Purchases — Phase 5 */}
         <Route path={ROUTES.PURCHASES}     element={<ComingSoonPage title="Purchases" />} />

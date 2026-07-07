@@ -1,9 +1,69 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 5 — Product Management Module (Complete)  
-> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 Complete  
+> **Phase:** 6 — Customer & Supplier Management Module (Complete)  
+> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 | ✅ Phase 6 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 6 — Customer & Supplier Management Module ✅
+
+> **Completed:** 2026-07-07
+
+### Module Architecture
+
+Both features are structured under `src/features/` with isolated components, services, and hooks:
+
+```
+features/
+├── customers/
+│   ├── schemas/customerSchemas.ts
+│   ├── services/customerService.ts
+│   ├── hooks/
+│   │   ├── useCustomers.ts
+│   │   └── useCustomerMutations.ts
+│   ├── components/
+│   │   ├── CustomerTable.tsx
+│   │   ├── CustomerFilters.tsx
+│   │   ├── CustomerForm.tsx
+│   │   └── CustomerDetails.tsx
+│   └── index.ts
+│
+└── suppliers/
+    ├── schemas/supplierSchemas.ts
+    ├── services/supplierService.ts
+    ├── hooks/
+    │   ├── useSuppliers.ts
+    │   └── useSupplierMutations.ts
+    ├── components/
+    │   ├── SupplierTable.tsx
+    │   ├── SupplierFilters.tsx
+    │   ├── SupplierForm.tsx
+    │   └── SupplierDetails.tsx
+    └── index.ts
+```
+
+### CRUD Workflow
+
+| Feature | Create Page | Edit Page | List View | Service Methods |
+|---------|-------------|-----------|-----------|-----------------|
+| Customers | `/customers/new` | `/customers/:id/edit` | `/customers` | `createCustomer`, `updateCustomer`, `getCustomers`, `deleteCustomer` |
+| Suppliers | `/suppliers/new` | `/suppliers/:id/edit` | `/suppliers` | `createSupplier`, `updateSupplier`, `getSuppliers`, `deleteSupplier` |
+
+### Key Features Implemented
+
+1. **Validation & Type Safety**:
+   - Integrated global Zod schemas from `src/lib/schemas.ts`.
+   - Name field is strictly required, email formats must be valid, and phone number lengths are constrained.
+2. **Search & Filters**:
+   - Customers & Suppliers filter queries match against name, email, or phone number fields.
+   - Text input debouncing (350ms) to preserve API limits.
+3. **Delete Confirmation**:
+   - Unified `ConfirmDialog` modal prompts user prior to delete operations.
+   - Graceful constraint warnings (e.g. if customer has existing invoices, deletion is prevented).
+4. **Dashboard Synchronicity**:
+   - Mutation completions invalidate `QUERY_KEYS.DASHBOARD` to update KPI metrics for total count of customers and suppliers.
 
 ---
 
