@@ -1,9 +1,9 @@
 /**
- * DashboardPage — Phase 4 production dashboard.
+ * DashboardPage — main ERP dashboard overview.
  *
  * Layout:
  * ┌─────────────────────────────────────────────────┐
- * │ Header: greeting + refresh button               │
+ * │ Header: greeting + date + refresh button        │
  * │─────────────────────────────────────────────────│
  * │ KPI Grid (6 cards)                              │
  * │─────────────────────────────────────────────────│
@@ -11,6 +11,8 @@
  * │─────────────────────────────────────────────────│
  * │ Recent Activity (1/2) │ Low Stock Alert (1/2)   │
  * └─────────────────────────────────────────────────┘
+ *
+ * Phase 10: Enhanced greeting section, better section spacing/labels.
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "@/context/AuthContext";
@@ -30,10 +32,18 @@ function RefreshButton({ onRefresh }: { onRefresh: () => void }) {
     <button
       id="dashboard-refresh-btn"
       onClick={onRefresh}
-      className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-caption text-text-tertiary hover:text-text-secondary transition-colors duration-150"
+      className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-caption font-medium text-text-tertiary hover:text-text-secondary transition-all duration-150"
       style={{
         background: "rgba(255,255,255,0.04)",
         border:     "1px solid var(--border-subtle)",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)";
+        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
       }}
       aria-label="Refresh dashboard data"
     >
@@ -55,6 +65,21 @@ function RefreshButton({ onRefresh }: { onRefresh: () => void }) {
       </svg>
       Refresh
     </button>
+  );
+}
+
+// ─── Section label ────────────────────────────────────────────────────────────
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-3 mb-4">
+      <span
+        className="text-caption font-semibold uppercase tracking-[0.08em] text-text-muted"
+      >
+        {children}
+      </span>
+      <div className="flex-1 h-px" style={{ background: "var(--border-subtle)" }} />
+    </div>
   );
 }
 
@@ -82,36 +107,56 @@ export function DashboardPage() {
   const dateStr   = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <div className="flex flex-col gap-8 max-w-[1400px]">
+
       {/* ── Page Header ──────────────────────────────────────────────────── */}
       <div className="flex items-start justify-between gap-4 flex-wrap">
         <div>
-          <h2 className="text-h2 text-text-primary font-bold">
-            {greeting}, {firstName}! 👋
-          </h2>
-          <p className="text-body text-text-secondary mt-1">{dateStr}</p>
+          <div className="flex items-center gap-3 mb-1">
+            <h2 className="text-h2 text-text-primary font-bold tracking-tight">
+              {greeting}, {firstName}!
+            </h2>
+            <span
+              className="text-h3 select-none hidden sm:inline"
+              role="img"
+              aria-label="waving hand"
+            >
+              👋
+            </span>
+          </div>
+          <p className="text-body-sm text-text-tertiary">{dateStr}</p>
         </div>
         <RefreshButton onRefresh={handleRefresh} />
       </div>
 
       {/* ── KPI Grid ─────────────────────────────────────────────────────── */}
-      <DashboardStats />
+      <section aria-label="KPI metrics">
+        <SectionLabel>Key Metrics</SectionLabel>
+        <DashboardStats />
+      </section>
 
       {/* ── Charts Row ───────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2">
-          <RevenueChart />
+      <section aria-label="Revenue and sales charts">
+        <SectionLabel>Revenue & Sales</SectionLabel>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          <div className="lg:col-span-2">
+            <RevenueChart />
+          </div>
+          <div>
+            <SalesChart />
+          </div>
         </div>
-        <div>
-          <SalesChart />
-        </div>
-      </div>
+      </section>
 
       {/* ── Bottom Row ───────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-        <RecentActivity />
-        <LowStockAlert />
-      </div>
+      <section aria-label="Recent activity and alerts">
+        <SectionLabel>Activity & Alerts</SectionLabel>
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+          <RecentActivity />
+          <LowStockAlert />
+        </div>
+      </section>
+
     </div>
   );
 }

@@ -1,9 +1,12 @@
 /**
  * SalesPage.tsx — /sales
+ *
+ * Phase 10: Uses standardized PageHeader component.
  */
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { PageHeader } from "@/components/common/PageHeader";
 import { ROUTES } from "@/utils/constants";
 import {
   useSales,
@@ -29,42 +32,32 @@ export function SalesPage() {
   return (
     <div className="flex flex-col gap-6 max-w-[1400px]">
       {/* Header */}
-      <div className="flex items-center justify-between gap-4 flex-wrap">
-        <div>
-          <div className="flex items-center gap-3">
-            <h2 className="text-h2 text-text-primary font-bold">Sales Invoices</h2>
-            {!isLoading && (
-              <span
-                className="text-caption font-semibold px-2.5 py-0.5 rounded-full"
-                style={{ background: "rgba(16,185,129,0.12)", color: "var(--success-400)" }}
-              >
-                {totalCount.toLocaleString()}
-              </span>
-            )}
-          </div>
-          <p className="text-body-sm text-text-secondary mt-1">
-            Create invoices and track customer transaction history.
-          </p>
-        </div>
-
-        <Link to={ROUTES.SALES_NEW}>
-          <Button
-            id="create-invoice-btn"
-            style={{
-              background: "linear-gradient(135deg, #10B981, #059669)",
-              color:      "white",
-              border:     "none",
-              boxShadow:  "0 0 20px rgba(16,185,129,0.2)",
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mr-1.5">
-              <line x1="12" y1="5" x2="12" y2="19"/>
-              <line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            Create Invoice
-          </Button>
-        </Link>
-      </div>
+      <PageHeader
+        title="Sales Invoices"
+        description="Create sales invoices, process customer orders, and track revenue."
+        count={totalCount}
+        countColor="green"
+        isLoading={isLoading}
+        actions={
+          <Link to={ROUTES.SALES_NEW}>
+            <Button
+              id="create-invoice-btn"
+              style={{
+                background: "linear-gradient(135deg, #10B981, #059669)",
+                color:      "white",
+                border:     "none",
+                boxShadow:  "0 0 20px rgba(16,185,129,0.2)",
+              }}
+            >
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="mr-1.5">
+                <line x1="12" y1="5" x2="12" y2="19"/>
+                <line x1="5" y1="12" x2="19" y2="12"/>
+              </svg>
+              Create Invoice
+            </Button>
+          </Link>
+        }
+      />
 
       {/* Filter bar */}
       <div className="card-glass px-5 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:flex-wrap">

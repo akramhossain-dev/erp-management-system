@@ -70,8 +70,20 @@ export function LowStockAlert() {
               <SkeletonRows />
             ) : !hasItems ? (
               <tr>
-                <td colSpan={3} className="py-6 text-center text-caption text-text-muted">
-                  ✓ All products are adequately stocked
+                <td colSpan={3} className="py-8 text-center">
+                  <div className="flex flex-col items-center gap-2">
+                    <div
+                      className="w-10 h-10 rounded-xl flex items-center justify-center"
+                      style={{ background: "rgba(16,185,129,0.1)", border: "1px solid rgba(16,185,129,0.2)" }}
+                      aria-hidden="true"
+                    >
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success-400)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    </div>
+                    <p className="text-body-sm text-text-secondary font-medium">All products adequately stocked</p>
+                    <p className="text-caption text-text-muted">No inventory alerts at this time.</p>
+                  </div>
                 </td>
               </tr>
             ) : (
@@ -93,16 +105,16 @@ export function LowStockAlert() {
                   </td>
                   <td className="py-3">
                     <span
-                      className="text-caption font-medium px-2 py-0.5 rounded-full"
-                      style={{
-                        background: product.stock_quantity === 0
-                          ? "rgba(239,68,68,0.12)"
-                          : "rgba(245,158,11,0.12)",
-                        color: product.stock_quantity === 0
-                          ? "var(--danger-400)"
-                          : "var(--warning-400)",
-                      }}
+                      className="status-badge"
+                      style={product.stock_quantity === 0
+                        ? { background: "rgba(244,63,94,0.1)", color: "var(--danger-400)", border: "1px solid rgba(244,63,94,0.2)" }
+                        : { background: "rgba(245,158,11,0.1)", color: "var(--warning-400)", border: "1px solid rgba(245,158,11,0.2)" }}
                     >
+                      <span
+                        className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                        style={{ background: product.stock_quantity === 0 ? "var(--danger-400)" : "var(--warning-400)" }}
+                        aria-hidden="true"
+                      />
                       {product.stock_quantity === 0 ? "Out of Stock" : "Low Stock"}
                     </span>
                   </td>

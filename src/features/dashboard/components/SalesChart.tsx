@@ -91,6 +91,8 @@ function CustomLegend({ payload }: { payload?: { value: string; color: string }[
 export function SalesChart() {
   const { data, isLoading } = useMonthlySalesCount();
 
+  const isEmpty = !isLoading && (!data || data.length === 0 || data.every((d) => d.completed === 0 && d.pending === 0));
+
   return (
     <div className="card-glass p-6 flex flex-col gap-5">
       {/* Header */}
@@ -102,6 +104,25 @@ export function SalesChart() {
       {/* Chart */}
       {isLoading ? (
         <ChartSkeleton />
+      ) : isEmpty ? (
+        <div className="h-56 flex flex-col items-center justify-center gap-3">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.12)" }}
+            aria-hidden="true"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--success-400)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 3v18h18"/>
+              <rect x="7" y="10" width="3" height="7" rx="1"/>
+              <rect x="13" y="6" width="3" height="11" rx="1"/>
+              <rect x="17" y="12" width="3" height="5" rx="1"/>
+            </svg>
+          </div>
+          <p className="text-body-sm text-text-secondary font-medium">No transactions found</p>
+          <p className="text-caption text-text-muted text-center max-w-[240px]">
+            Your completed and pending monthly sales volumes will appear here.
+          </p>
+        </div>
       ) : (
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">

@@ -20,14 +20,14 @@ const isRealUrl = (url: string | undefined): url is string => {
 };
 
 const supabaseUrl    = isRealUrl(rawUrl) ? rawUrl : PLACEHOLDER_URL;
-const supabaseAnonKey = (rawAnonKey && rawAnonKey.startsWith("eyJ")) ? rawAnonKey : PLACEHOLDER_KEY;
+const supabaseAnonKey = (rawAnonKey && (rawAnonKey.startsWith("eyJ") || rawAnonKey.startsWith("sb_"))) ? rawAnonKey : PLACEHOLDER_KEY;
 
-if (!isRealUrl(rawUrl) || !rawAnonKey?.startsWith("eyJ")) {
+if (!isRealUrl(rawUrl) || (!rawAnonKey?.startsWith("eyJ") && !rawAnonKey?.startsWith("sb_"))) {
   console.warn(
     "⚠️  Supabase credentials not configured.\n" +
     "Open .env.local and set:\n" +
     "  VITE_SUPABASE_URL=https://your-project.supabase.co\n" +
-    "  VITE_SUPABASE_ANON_KEY=eyJ...\n" +
+    "  VITE_SUPABASE_ANON_KEY=eyJ... or sb_...\n" +
     "Get them from: https://app.supabase.com → Project Settings → API\n" +
     "Auth features will show UI but API calls will fail until configured."
   );
@@ -57,5 +57,6 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   },
 });
 
-/** True when real Supabase credentials are configured. */
-export const isSupabaseConfigured = isRealUrl(rawUrl) && !!rawAnonKey?.startsWith("eyJ");
+export const isSupabaseConfigured =
+  isRealUrl(rawUrl) &&
+  (!!rawAnonKey?.startsWith("eyJ") || !!rawAnonKey?.startsWith("sb_"));

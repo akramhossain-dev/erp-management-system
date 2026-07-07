@@ -1,10 +1,10 @@
 /**
- * Navbar — top header bar for the ERP dashboard.
+ * Navbar — sticky top header bar for the ERP dashboard.
  *
  * Features:
- * - Page title (derived from current route)
+ * - Page title + breadcrumb subtitle (derived from current route)
  * - Mobile hamburger menu toggle
- * - Notification bell (UI only — Phase 4)
+ * - Notification bell (UI only)
  * - User avatar + dropdown (logout)
  * - Glass morphism background
  */
@@ -17,31 +17,29 @@ import { MenuIcon, BellIcon, LogOutIcon } from "@/components/common/NavIcons";
 import { cn } from "@/lib/utils";
 import { ROUTES } from "@/utils/constants";
 
-// ─── Route → Page Title map ───────────────────────────────────────────────────
+// ─── Route → Page meta ────────────────────────────────────────────────────────
 
-const ROUTE_TITLES: Record<string, string> = {
-  [ROUTES.DASHBOARD]: "Dashboard",
-  [ROUTES.PRODUCTS]:  "Products",
-  [ROUTES.CUSTOMERS]: "Customers",
-  [ROUTES.SUPPLIERS]: "Suppliers",
-  [ROUTES.PURCHASES]: "Purchases",
-  [ROUTES.SALES]:     "Sales",
-  [ROUTES.REPORTS]:   "Reports",
+const ROUTE_META: Record<string, { title: string; subtitle: string }> = {
+  [ROUTES.DASHBOARD]: { title: "Dashboard",  subtitle: "Overview & analytics"    },
+  [ROUTES.PRODUCTS]:  { title: "Products",   subtitle: "Inventory management"    },
+  [ROUTES.CUSTOMERS]: { title: "Customers",  subtitle: "Customer relationship"   },
+  [ROUTES.SUPPLIERS]: { title: "Suppliers",  subtitle: "Supplier management"     },
+  [ROUTES.PURCHASES]: { title: "Purchases",  subtitle: "Purchase orders"         },
+  [ROUTES.SALES]:     { title: "Sales",      subtitle: "Sales & invoices"        },
+  [ROUTES.REPORTS]:   { title: "Reports",    subtitle: "Analytics & export"      },
 };
 
-function getPageTitle(pathname: string): string {
-  // Exact match first
-  if (ROUTE_TITLES[pathname]) return ROUTE_TITLES[pathname];
-  // Prefix match for sub-routes
-  const match = Object.entries(ROUTE_TITLES).find(([route]) =>
+function getPageMeta(pathname: string): { title: string; subtitle: string } {
+  if (ROUTE_META[pathname]) return ROUTE_META[pathname];
+  const match = Object.entries(ROUTE_META).find(([route]) =>
     route !== ROUTES.DASHBOARD && pathname.startsWith(route)
   );
-  return match ? match[1] : "ERP System";
+  return match ? match[1] : { title: "ERP System", subtitle: "Management Suite" };
 }
 
 // ─── Avatar ───────────────────────────────────────────────────────────────────
 
-function UserAvatar({ name }: { name: string }) {
+function UserAvatar({ name, size = 34 }: { name: string; size?: number }) {
   const initials = name
     .split(" ")
     .map((w) => w[0])
@@ -51,8 +49,22 @@ function UserAvatar({ name }: { name: string }) {
 
   return (
     <div
-      className="w-8 h-8 rounded-full flex items-center justify-center text-caption font-bold text-white flex-shrink-0"
-      style={{ background: "linear-gradient(135deg, #3B82F6, #7C3AED)" }}
+      style={{
+        width: size,
+        height: size,
+        minWidth: size,
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: 12,
+        fontWeight: 700,
+        color: "white",
+        flexShrink: 0,
+        userSelect: "none",
+        background: "linear-gradient(135deg, #3B82F6 0%, #7C3AED 100%)",
+        boxShadow: "0 0 10px rgba(59,130,246,0.3)",
+      }}
       aria-hidden="true"
     >
       {initials}
@@ -68,15 +80,15 @@ interface NavbarProps {
 }
 
 export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
-  const location          = useLocation();
-  const { user }          = useAuthContext();
+  const location               = useLocation();
+  const { user }               = useAuthContext();
   const { logout, isMutating } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
-  const pageTitle  = getPageTitle(location.pathname);
-  const userName   = user?.user_metadata?.full_name ?? user?.email ?? "User";
-  const userEmail  = user?.email ?? "";
-  const displayName = userName.length > 20 ? userName.split(" ")[0] : userName;
+  const { title: pageTitle, subtitle: pageSubtitle } = getPageMeta(location.pathname);
+  const userName    = user?.user_metadata?.full_name ?? user?.email ?? "User";
+  const userEmail   = user?.email ?? "";
+  const displayName = userName.length > 22 ? userName.split(" ")[0] : userName;
 
   const handleLogout = async () => {
     setUserMenuOpen(false);
@@ -90,151 +102,343 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
   return (
     <header
       id="top-navbar"
-      className="sticky top-0 z-40 flex items-center gap-4 px-6 flex-shrink-0"
       style={{
+        position: "sticky",
+        top: 0,
+        zIndex: 35,
         height,
-        background:     "rgba(8, 12, 20, 0.85)",
-        backdropFilter: "blur(16px) saturate(180%)",
-        borderBottom:   "1px solid var(--border-subtle)",
+        minHeight: height,
+        display: "flex",
+        alignItems: "center",
+        gap: 16,
+        padding: "0 24px",
+        flexShrink: 0,
+        background: "rgba(8,12,20,0.9)",
+        backdropFilter: "blur(20px) saturate(160%)",
+        WebkitBackdropFilter: "blur(20px) saturate(160%)",
+        borderBottom: "1px solid rgba(255,255,255,0.07)",
       }}
     >
-      {/* ── Left: Mobile menu + Page title ─────────────────────────────── */}
-      <div className="flex items-center gap-3 flex-1 min-w-0">
-        {/* Mobile hamburger — only shown on small screens */}
+      {/* ── Left: hamburger + page title ──────────────────────────────────── */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 0 }}>
+
+        {/* Mobile hamburger — hidden on lg+ */}
         <button
           id="mobile-menu-btn"
           onClick={onMobileMenuToggle}
-          className={cn(
-            "lg:hidden p-2 rounded-xl text-text-tertiary hover:text-text-primary",
-            "hover:bg-white/5 transition-colors duration-150",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-          )}
           aria-label="Open navigation menu"
+          className="lg:hidden"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 36,
+            height: 36,
+            minWidth: 36,
+            borderRadius: 9,
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            color: "rgba(148,163,184,0.8)",
+            transition: "background 150ms, color 150ms",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+          }}
         >
           <MenuIcon size={20} />
         </button>
 
-        {/* Page title */}
-        <div className="min-w-0">
-          <h1 className="text-h4 text-text-primary font-semibold truncate">
+        {/* Page title + subtitle */}
+        <div style={{ minWidth: 0 }}>
+          <h1
+            style={{
+              margin: 0,
+              fontSize: 17,
+              fontWeight: 600,
+              color: "#f1f5f9",
+              lineHeight: "1.25",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
             {pageTitle}
           </h1>
+          <p
+            style={{
+              margin: 0,
+              fontSize: 11.5,
+              color: "rgba(100,116,139,0.85)",
+              lineHeight: "1.3",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            {pageSubtitle}
+          </p>
         </div>
       </div>
 
-      {/* ── Right: Notifications + User menu ──────────────────────────── */}
-      <div className="flex items-center gap-2 flex-shrink-0">
+      {/* ── Right: notifications + user menu ──────────────────────────────── */}
+      <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
 
-        {/* Notification bell (UI only) */}
+        {/* Notification bell */}
         <button
           id="notifications-btn"
-          className={cn(
-            "relative p-2 rounded-xl text-text-tertiary hover:text-text-primary",
-            "hover:bg-white/5 transition-colors duration-150",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-          )}
           aria-label="Notifications"
+          style={{
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: 36,
+            height: 36,
+            borderRadius: 9,
+            border: "none",
+            background: "transparent",
+            cursor: "pointer",
+            color: "rgba(148,163,184,0.8)",
+            transition: "background 150ms, color 150ms",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+            (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.background = "transparent";
+            (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+          }}
         >
           <BellIcon size={18} />
-          {/* Dot indicator */}
+          {/* Notification dot */}
           <span
-            className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary-500 ring-2"
-            style={{ borderColor: "var(--bg-base)" }}
             aria-hidden="true"
+            style={{
+              position: "absolute",
+              top: 8,
+              right: 8,
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: "#3B82F6",
+              boxShadow: "0 0 5px rgba(59,130,246,0.8)",
+            }}
           />
         </button>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-white/10 mx-1" aria-hidden="true" />
+        <div
+          aria-hidden="true"
+          style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)", margin: "0 6px" }}
+        />
 
-        {/* User menu */}
-        <div className="relative">
+        {/* User menu button */}
+        <div style={{ position: "relative" }}>
           <button
             id="user-menu-btn"
             onClick={() => setUserMenuOpen((prev) => !prev)}
-            className={cn(
-              "flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl",
-              "hover:bg-white/5 transition-colors duration-150",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500",
-              userMenuOpen && "bg-white/5",
-            )}
             aria-label="User menu"
             aria-expanded={userMenuOpen}
             aria-haspopup="menu"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              padding: "5px 10px 5px 6px",
+              borderRadius: 10,
+              border: "none",
+              background: userMenuOpen ? "rgba(255,255,255,0.06)" : "transparent",
+              cursor: "pointer",
+              transition: "background 150ms",
+            }}
+            onMouseEnter={(e) => {
+              (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+            }}
+            onMouseLeave={(e) => {
+              if (!userMenuOpen) (e.currentTarget as HTMLElement).style.background = "transparent";
+            }}
           >
-            <UserAvatar name={userName} />
-            <div className="hidden sm:flex flex-col items-start min-w-0">
-              <span className="text-body-sm text-text-primary font-medium truncate max-w-[120px]">
+            <UserAvatar name={userName} size={32} />
+
+            {/* Name + email — hidden on mobile */}
+            <div
+              className="hidden sm:flex"
+              style={{ flexDirection: "column", alignItems: "flex-start", minWidth: 0 }}
+            >
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 600,
+                  color: "#e2e8f0",
+                  whiteSpace: "nowrap",
+                  maxWidth: 130,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  lineHeight: "1.25",
+                }}
+              >
                 {displayName}
               </span>
-              <span className="text-caption text-text-muted truncate max-w-[120px]">
+              <span
+                style={{
+                  fontSize: 11,
+                  color: "rgba(100,116,139,0.8)",
+                  whiteSpace: "nowrap",
+                  maxWidth: 130,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  lineHeight: "1.25",
+                }}
+              >
                 {userEmail}
               </span>
             </div>
+
             {/* Chevron */}
             <svg
-              width="14"
-              height="14"
+              width="12"
+              height="12"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className={cn("text-text-muted transition-transform duration-200 hidden sm:block", userMenuOpen && "rotate-180")}
               aria-hidden="true"
+              className="hidden sm:block"
+              style={{
+                color: "rgba(100,116,139,0.7)",
+                transform: userMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                transition: "transform 200ms",
+                flexShrink: 0,
+              }}
             >
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </button>
 
-          {/* Dropdown menu */}
+          {/* Dropdown */}
           {userMenuOpen && (
             <>
               {/* Backdrop */}
               <div
-                className="fixed inset-0 z-40"
+                style={{ position: "fixed", inset: 0, zIndex: 40 }}
                 onClick={() => setUserMenuOpen(false)}
                 aria-hidden="true"
               />
+
               <div
                 role="menu"
                 aria-label="User options"
-                className="absolute right-0 top-full mt-2 w-56 z-50 rounded-xl overflow-hidden"
+                className="animate-scale-in"
                 style={{
-                  background:    "var(--bg-surface-300)",
-                  border:        "1px solid var(--border-default)",
-                  boxShadow:     "var(--shadow-xl)",
+                  position: "absolute",
+                  right: 0,
+                  top: "calc(100% + 8px)",
+                  width: 230,
+                  zIndex: 50,
+                  borderRadius: 12,
+                  overflow: "hidden",
+                  background: "rgba(14,20,36,0.97)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  boxShadow: "0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.05)",
                 }}
               >
-                {/* User info header */}
+                {/* User info */}
                 <div
-                  className="px-4 py-3"
-                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    padding: "14px 16px",
+                    borderBottom: "1px solid rgba(255,255,255,0.07)",
+                  }}
                 >
-                  <p className="text-body-sm text-text-primary font-medium truncate">{userName}</p>
-                  <p className="text-caption text-text-muted truncate">{userEmail}</p>
+                  <UserAvatar name={userName} size={34} />
+                  <div style={{ minWidth: 0 }}>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#f1f5f9",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: 150,
+                      }}
+                    >
+                      {userName}
+                    </p>
+                    <p
+                      style={{
+                        margin: "2px 0 0",
+                        fontSize: 11,
+                        color: "rgba(100,116,139,0.8)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        maxWidth: 150,
+                      }}
+                    >
+                      {userEmail}
+                    </p>
+                  </div>
                 </div>
 
-                {/* Sign out */}
-                <div className="p-1">
+                {/* Sign out button */}
+                <div style={{ padding: "6px" }}>
                   <button
                     id="navbar-logout-btn"
                     role="menuitem"
                     onClick={handleLogout}
                     disabled={isMutating}
-                    className={cn(
-                      "w-full flex items-center gap-2.5 px-3 py-2 rounded-lg",
-                      "text-body-sm text-danger-400 hover:text-danger-300",
-                      "hover:bg-danger-400/10 transition-colors duration-150",
-                      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger-400",
-                      "disabled:opacity-50 disabled:cursor-not-allowed",
-                    )}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "9px 12px",
+                      borderRadius: 8,
+                      border: "none",
+                      background: "transparent",
+                      cursor: isMutating ? "not-allowed" : "pointer",
+                      color: "#f87171",
+                      fontSize: 13,
+                      fontWeight: 500,
+                      transition: "background 150ms, color 150ms",
+                      opacity: isMutating ? 0.5 : 1,
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isMutating) (e.currentTarget as HTMLElement).style.background = "rgba(239,68,68,0.1)";
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.background = "transparent";
+                    }}
                   >
                     {isMutating ? (
-                      <span className="w-4 h-4 border-2 border-current/40 border-t-current rounded-full animate-spin" aria-hidden="true" />
+                      <span
+                        aria-hidden="true"
+                        style={{
+                          width: 15,
+                          height: 15,
+                          borderRadius: "50%",
+                          border: "2px solid rgba(239,68,68,0.3)",
+                          borderTopColor: "#ef4444",
+                          animation: "spin 0.7s linear infinite",
+                          display: "inline-block",
+                        }}
+                      />
                     ) : (
-                      <LogOutIcon size={16} />
+                      <LogOutIcon size={15} />
                     )}
                     Sign out
                   </button>

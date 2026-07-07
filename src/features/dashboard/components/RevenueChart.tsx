@@ -67,6 +67,8 @@ function CustomTooltip({ active, payload, label }: {
 export function RevenueChart() {
   const { data, isLoading } = useMonthlyRevenue();
 
+  const isEmpty = !isLoading && (!data || data.length === 0 || data.every((d) => d.revenue === 0));
+
   return (
     <div className="card-glass p-6 flex flex-col gap-5">
       {/* Header */}
@@ -76,15 +78,35 @@ export function RevenueChart() {
           <p className="text-caption text-text-muted mt-0.5">Last 6 months (completed sales)</p>
         </div>
         {/* Legend */}
-        <div className="flex items-center gap-1.5">
-          <span className="w-3 h-3 rounded-sm" style={{ background: "#3B82F6" }} aria-hidden="true" />
-          <span className="text-caption text-text-tertiary">Revenue</span>
-        </div>
+        {!isEmpty && (
+          <div className="flex items-center gap-1.5">
+            <span className="w-3 h-3 rounded-sm" style={{ background: "#3B82F6" }} aria-hidden="true" />
+            <span className="text-caption text-text-tertiary">Revenue</span>
+          </div>
+        )}
       </div>
 
       {/* Chart */}
       {isLoading ? (
         <ChartSkeleton />
+      ) : isEmpty ? (
+        <div className="h-64 flex flex-col items-center justify-center gap-3">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{ background: "rgba(59,130,246,0.06)", border: "1px solid rgba(59,130,246,0.12)" }}
+            aria-hidden="true"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-400)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+            </svg>
+          </div>
+          <p className="text-body-sm text-text-secondary font-medium">No sales recorded yet</p>
+          <p className="text-caption text-text-muted text-center max-w-[280px]">
+            Once you create completed sales invoices, your monthly revenue trend will be graphed here.
+          </p>
+        </div>
       ) : (
         <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">

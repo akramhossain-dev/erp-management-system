@@ -8,7 +8,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -23,11 +23,13 @@ export function RegisterForm() {
   const { register: registerUser, isMutating } = useAuth();
   const [emailConfirmationNeeded, setEmailConfirmationNeeded] = useState(false);
   const [registeredEmail, setRegisteredEmail] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -59,8 +61,12 @@ export function RegisterForm() {
 
     if (result.success && !result.error) {
       toast.success("Account created!", {
-        description: "Welcome to ERP Management System.",
+        description: "Welcome to ERP Management System. Redirecting to login...",
       });
+      reset();
+      setTimeout(() => {
+        navigate(ROUTES.LOGIN);
+      }, 1500);
     }
   };
 
@@ -137,7 +143,7 @@ export function RegisterForm() {
           autoComplete="name"
           autoFocus
           aria-describedby={errors.full_name ? "register-name-error" : undefined}
-          className={errors.full_name ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}
+          className={`auth-input-glass ${errors.full_name ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}`}
           {...register("full_name")}
         />
       </FormFieldWrapper>
@@ -155,7 +161,7 @@ export function RegisterForm() {
           placeholder="you@company.com"
           autoComplete="email"
           aria-describedby={errors.email ? "register-email-error" : undefined}
-          className={errors.email ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}
+          className={`auth-input-glass ${errors.email ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}`}
           {...register("email")}
         />
       </FormFieldWrapper>
@@ -173,6 +179,7 @@ export function RegisterForm() {
           autoComplete="new-password"
           hasError={!!errors.password}
           aria-describedby={errors.password ? "register-password-error" : undefined}
+          className="auth-input-glass"
           {...register("password")}
         />
         <PasswordStrength password={passwordValue} />
@@ -191,6 +198,7 @@ export function RegisterForm() {
           autoComplete="new-password"
           hasError={!!errors.confirm_password}
           aria-describedby={errors.confirm_password ? "register-confirm-password-error" : undefined}
+          className="auth-input-glass"
           {...register("confirm_password")}
         />
       </FormFieldWrapper>
@@ -200,12 +208,8 @@ export function RegisterForm() {
         id="register-submit-btn"
         type="submit"
         disabled={isMutating}
-        className="w-full mt-1"
+        className="w-full mt-1 auth-button-premium"
         size="lg"
-        style={{
-          background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-          boxShadow: "0 0 20px rgba(59,130,246,0.25)",
-        }}
       >
         {isMutating ? (
           <span className="flex items-center gap-2">

@@ -74,7 +74,7 @@ export function LoginForm() {
           autoComplete="email"
           autoFocus
           aria-describedby={errors.email ? "login-email-error" : undefined}
-          className={errors.email ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}
+          className={`auth-input-glass ${errors.email ? "border-danger-400 focus-visible:ring-danger-400/20" : ""}`}
           {...register("email")}
         />
       </FormFieldWrapper>
@@ -92,6 +92,7 @@ export function LoginForm() {
           autoComplete="current-password"
           hasError={!!errors.password}
           aria-describedby={errors.password ? "login-password-error" : undefined}
+          className="auth-input-glass"
           {...register("password")}
         />
       </FormFieldWrapper>
@@ -101,12 +102,8 @@ export function LoginForm() {
         id="login-submit-btn"
         type="submit"
         disabled={isMutating}
-        className="w-full mt-1"
+        className="w-full mt-1 auth-button-premium"
         size="lg"
-        style={{
-          background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-          boxShadow: "0 0 20px rgba(59,130,246,0.25)",
-        }}
       >
         {isMutating ? (
           <span className="flex items-center gap-2">

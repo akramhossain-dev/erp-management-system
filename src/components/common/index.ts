@@ -1,5 +1,6 @@
 /**
  * Common shared components — public API.
- * Implemented in Phase 2+.
  */
-export {};
+export { KpiCard }    from "./KpiCard";
+export { ConfirmDialog } from "./ConfirmDialog";
+export { PageHeader } from "./PageHeader";
