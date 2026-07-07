@@ -24,23 +24,10 @@ import { PurchaseDetailsPage } from "@/pages/purchases/PurchaseDetailsPage";
 import { SalesPage } from "@/pages/sales/SalesPage";
 import { SalesNewPage } from "@/pages/sales/SalesNewPage";
 import { SalesDetailsPage } from "@/pages/sales/SalesDetailsPage";
+// ─── Phase 9: Reports page ───────────────────────────────────────────────────
+import { ReportsPage } from "@/pages/reports/ReportsPage";
 import { ROUTES } from "@/utils/constants";
 
-// ─── Placeholder for Phase 4+ pages ──────────────────────────────────────────
-
-function ComingSoonPage({ title }: { title: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <div className="w-16 h-16 rounded-2xl glass-default flex items-center justify-center text-3xl" aria-hidden="true">
-        🚧
-      </div>
-      <h1 className="text-h2 text-text-primary">{title}</h1>
-      <p className="text-body text-text-secondary">
-        This module will be implemented in the next phase.
-      </p>
-    </div>
-  );
-}
 
 /**
  * AppRoutes — complete application routing.
@@ -99,13 +86,13 @@ export function AppRoutes() {
         <Route path="/sales/:id"       element={<SalesDetailsPage />} />
         <Route path="/sales/:id/invoice" element={<SalesDetailsPage />} />
 
-        {/* Reports — Phase 6 */}
-        <Route path={ROUTES.REPORTS}           element={<ComingSoonPage title="Reports" />} />
-        <Route path={ROUTES.REPORTS_PRODUCTS}  element={<ComingSoonPage title="Product Reports" />} />
-        <Route path={ROUTES.REPORTS_CUSTOMERS} element={<ComingSoonPage title="Customer Reports" />} />
-        <Route path={ROUTES.REPORTS_SUPPLIERS} element={<ComingSoonPage title="Supplier Reports" />} />
-        <Route path={ROUTES.REPORTS_PURCHASES} element={<ComingSoonPage title="Purchase Reports" />} />
-        <Route path={ROUTES.REPORTS_SALES}     element={<ComingSoonPage title="Sales Reports" />} />
+        {/* Reports — Phase 9 ✅ */}
+        <Route path={ROUTES.REPORTS}           element={<ReportsPage />} />
+        <Route path={ROUTES.REPORTS_PRODUCTS}  element={<ReportsPage />} />
+        <Route path={ROUTES.REPORTS_CUSTOMERS} element={<ReportsPage />} />
+        <Route path={ROUTES.REPORTS_SUPPLIERS} element={<ReportsPage />} />
+        <Route path={ROUTES.REPORTS_PURCHASES} element={<ReportsPage />} />
+        <Route path={ROUTES.REPORTS_SALES}     element={<ReportsPage />} />
       </Route>
 
       {/* 404 — redirect to dashboard (ProtectedRoute will handle auth) */}

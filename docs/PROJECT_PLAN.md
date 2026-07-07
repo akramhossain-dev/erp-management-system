@@ -1,9 +1,85 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 7 — Purchase Management Module (Complete)  
-> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 | ✅ Phase 6 | ✅ Phase 7 Complete  
+> **Phase:** 9 — Reports & Analytics Module (Complete)  
+> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 | ✅ Phase 6 | ✅ Phase 7 | ✅ Phase 8 | ✅ Phase 9 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 9 — Reports & Analytics Module ✅
+
+> **Completed:** 2026-07-07
+
+### Module Architecture
+
+Structured cleanly under `src/features/reports/`:
+
+```
+features/reports/
+├── components/
+│   ├── ReportFilters.tsx      → Universal report filters (date range, customer, supplier, category, search)
+│   ├── ReportTable.tsx        → Reusable report tabular grid with auto-aggregation totals row
+│   ├── ReportSummaryCards.tsx → Reusable summary metrics grid
+│   ├── ProductReportView.tsx  → Inventory value and cost summaries
+│   ├── CustomerReportView.tsx → Customer spent and order count lists
+│   ├── SupplierReportView.tsx → Supplier supply counts and valuation lists
+│   ├── PurchaseReportView.tsx → Supplier and date filters on complete purchase orders
+│   └── SalesReportView.tsx    → Customer and date filters on complete sales invoices
+├── hooks/
+│   └── useReport.ts           → React Query selector hook with filter debouncing
+├── services/
+│   └── reportService.ts       → Queries to Supabase and aggregations
+└── index.ts                   → Barrel entrypoint exports
+```
+
+### Key Reports Implemented
+
+1. **Product Inventory Report**: Displays name, SKU, category, cost price, retail price, stock quantity, and total inventory value. Summarizes total stock count and cost valuation.
+2. **Customer spent Report**: Displays customer name, email, phone, invoice counts, total amount spent, and last purchase date.
+3. **Supplier supplies Report**: Displays supplier name, email, phone, PO count, total supplied amount, and last supply date.
+4. **Purchase transaction Report**: Displays PO IDs, supplier names, purchase dates, total costs, and item quantities. Filters by date range and supplier.
+5. **Sales transaction Report**: Displays Invoice numbers, customer names, sale dates, revenues, and quantities. Filters by date range and customer.
+
+### CSV Export System
+
+Utilizes a robust, client-side cell-escaped CSV formatting engine ([csvExporter.ts](file:///media/akram/code/Project/erp-management-system/src/utils/csvExporter.ts)) that embeds UTF-8 BOM encoding for seamless Excel import compatibility.
+
+---
+
+## Phase 8 — Sales Management Module ✅
+
+> **Completed:** 2026-07-07
+
+### Module Architecture
+
+Structured cleanly under `src/features/sales/`:
+
+```
+features/sales/
+├── schemas/
+│   └── salesSchemas.ts        → sale validation schema, form defaults
+├── services/
+│   └── salesService.ts        → getSales, getSaleById, createSale, deleteSale
+├── hooks/
+│   ├── useSales.ts            → list + details query hooks
+│   └── useSalesMutations.ts   → create + delete mutations with cash sync
+└── components/
+    ├── SalesTable.tsx         → listings with invoice number
+    ├── SalesForm.tsx          → sales RHF layout with stock limit validations
+    ├── SalesItemRow.tsx       → item row with active stock indicators
+    ├── SalesSummary.tsx       → summary totals aggregates
+    ├── SalesDetails.tsx       → invoice preview card
+    └── InvoicePreview.tsx     → high-fidelity printable invoice wrapper
+```
+
+### Business Flow & Stock updates
+
+1. **Invoice generation**: Generates unique invoice numbers (`INV-YYYYMMDD-NNNN`) via Postgres RPC.
+2. **Dynamic Stock validation**: Checks stock levels client-side and blocks form submissions when quantities exceed limits.
+3. **Automatic stock reduction**:
+   - Added DB trigger `on_sale_item_inserted` (`009_sale_stock_trigger.sql`) which decreases stock automatically on insertion of sales items.
+   - Throws error code `P0001` if stock level drops below zero.
 
 ---
 
