@@ -2,13 +2,14 @@
  * PurchaseDetailsPage.tsx — /purchases/:id
  */
 import { useParams, Link, Navigate } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { PurchaseDetails } from "@/features/purchases";
 import { usePurchase } from "@/features/purchases";
 import { ROUTES } from "@/utils/constants";
 
 function DetailsPageSkeleton() {
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <div className="skeleton h-4 w-40 rounded" />
@@ -19,7 +20,7 @@ function DetailsPageSkeleton() {
         <div className="skeleton h-6 w-32 rounded" />
         <div className="skeleton h-10 w-full rounded-xl" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -44,7 +45,7 @@ export function PurchaseDetailsPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.PURCHASES} className="hover:text-text-secondary transition-colors">
@@ -60,6 +61,6 @@ export function PurchaseDetailsPage() {
 
       {/* Details Card */}
       <PurchaseDetails purchase={purchase} />
-    </div>
+    </PageContainer>
   );
 }

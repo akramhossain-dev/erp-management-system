@@ -2,6 +2,7 @@
  * CustomerNewPage.tsx — /customers/new
  */
 import { Link } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { CustomerForm } from "@/features/customers";
 import { useCreateCustomer } from "@/features/customers";
 import { ROUTES } from "@/utils/constants";
@@ -10,7 +11,7 @@ export function CustomerNewPage() {
   const { mutate: createCustomer, isPending } = useCreateCustomer();
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.CUSTOMERS} className="hover:text-text-secondary transition-colors">
@@ -36,6 +37,6 @@ export function CustomerNewPage() {
         onSubmit={createCustomer}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

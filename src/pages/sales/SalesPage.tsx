@@ -6,7 +6,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader, PageContainer } from "@/components/common";
 import { ROUTES } from "@/utils/constants";
 import {
   useSales,
@@ -30,7 +30,7 @@ export function SalesPage() {
   } = useSales(10);
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       {/* Header */}
       <PageHeader
         title="Sales Invoices"
@@ -113,6 +113,6 @@ export function SalesPage() {
         hasActiveFilters={hasActiveFilters}
         onClearFilters={resetFilters}
       />
-    </div>
+    </PageContainer>
   );
 }

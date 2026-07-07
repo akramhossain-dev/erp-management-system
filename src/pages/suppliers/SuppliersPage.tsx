@@ -5,7 +5,7 @@
  */
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader, PageContainer } from "@/components/common";
 import { ROUTES } from "@/utils/constants";
 import {
   useSuppliers,
@@ -30,7 +30,7 @@ export function SuppliersPage() {
   } = useSuppliers(10);
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       {/* Header */}
       <PageHeader
         title="Suppliers"
@@ -100,6 +100,6 @@ export function SuppliersPage() {
         hasActiveFilters={hasActiveFilters}
         onClearFilters={resetFilters}
       />
-    </div>
+    </PageContainer>
   );
 }

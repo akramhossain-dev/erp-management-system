@@ -2,13 +2,14 @@
  * SupplierEditPage.tsx — /suppliers/:id/edit
  */
 import { useParams, Link, Navigate } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { SupplierForm } from "@/features/suppliers";
 import { useSupplier, useUpdateSupplier } from "@/features/suppliers";
 import { ROUTES } from "@/utils/constants";
 
 function EditPageSkeleton() {
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
       <div className="flex flex-col gap-2">
         <div className="skeleton h-4 w-40 rounded" />
         <div className="skeleton h-8 w-56 rounded-lg" />
@@ -18,7 +19,7 @@ function EditPageSkeleton() {
         <div className="skeleton h-10 w-full rounded-xl" />
         <div className="skeleton h-10 w-full rounded-xl" />
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -44,7 +45,7 @@ export function SupplierEditPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.SUPPLIERS} className="hover:text-text-secondary transition-colors">
@@ -75,6 +76,6 @@ export function SupplierEditPage() {
         onSubmit={updateSupplier}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

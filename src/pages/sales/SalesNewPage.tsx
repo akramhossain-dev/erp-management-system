@@ -2,6 +2,7 @@
  * SalesNewPage.tsx — /sales/new
  */
 import { Link } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { SalesForm } from "@/features/sales";
 import { useCreateSale } from "@/features/sales";
 import { useCustomers } from "@/features/customers";
@@ -19,19 +20,19 @@ export function SalesNewPage() {
 
   if (isLoading) {
     return (
-      <div className="flex flex-col gap-6 max-w-3xl">
+      <PageContainer variant="wide">
         <div className="skeleton h-4 w-40 rounded" />
         <div className="skeleton h-8 w-56 rounded-lg" />
         <div className="card-glass p-6 flex flex-col gap-4">
           <div className="skeleton h-6 w-32 rounded" />
           <div className="skeleton h-10 w-full rounded-xl" />
         </div>
-      </div>
+      </PageContainer>
     );
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.SALES} className="hover:text-text-secondary transition-colors">
@@ -58,6 +59,6 @@ export function SalesNewPage() {
         onSubmit={createSale}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

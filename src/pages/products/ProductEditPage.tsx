@@ -5,6 +5,7 @@
  * with pre-populated values. Shows ProductDetails above the form for context.
  */
 import { useParams, Link, Navigate } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { ProductForm } from "@/features/products";
 import { useProduct, useUpdateProduct } from "@/features/products";
 import { ROUTES } from "@/utils/constants";
@@ -13,7 +14,7 @@ import { ROUTES } from "@/utils/constants";
 
 function EditPageSkeleton() {
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
       <div className="flex flex-col gap-2">
         <div className="skeleton h-4 w-40 rounded" />
         <div className="skeleton h-8 w-56 rounded-lg" />
@@ -30,7 +31,7 @@ function EditPageSkeleton() {
           <div className="skeleton h-10 rounded-xl" />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }
 
@@ -58,7 +59,7 @@ export function ProductEditPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
@@ -92,6 +93,6 @@ export function ProductEditPage() {
         onSubmit={updateProduct}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

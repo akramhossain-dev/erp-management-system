@@ -4,6 +4,7 @@
  * Create a new product using the ProductForm in "create" mode.
  */
 import { Link } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { ProductForm } from "@/features/products";
 import { useCreateProduct } from "@/features/products";
 import { ROUTES } from "@/utils/constants";
@@ -12,7 +13,7 @@ export function ProductNewPage() {
   const { mutate: createProduct, isPending } = useCreateProduct();
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
 
       {/* Breadcrumb */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
@@ -39,6 +40,6 @@ export function ProductNewPage() {
         onSubmit={createProduct}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

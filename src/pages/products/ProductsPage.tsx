@@ -10,7 +10,7 @@
  */
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { PageHeader } from "@/components/common/PageHeader";
+import { PageHeader, PageContainer } from "@/components/common";
 import { ROUTES } from "@/utils/constants";
 import {
   useProducts,
@@ -38,7 +38,7 @@ export function ProductsPage() {
   const { data: dbCategories } = useProductCategories();
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
 
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <PageHeader
@@ -110,6 +110,6 @@ export function ProductsPage() {
         hasActiveFilters={hasActiveFilters}
         onClearFilters={resetFilters}
       />
-    </div>
+    </PageContainer>
   );
 }

@@ -5,6 +5,7 @@
  */
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { PageContainer } from "@/components/common";
 import { ROUTES } from "@/utils/constants";
 import {
   ProductReportView,
@@ -106,7 +107,7 @@ export function ReportsPage() {
   ];
 
   return (
-    <div className="flex flex-col gap-6 max-w-[1400px]">
+    <PageContainer variant="wide">
       {/* Page Header */}
       <div>
         <h2 className="text-h2 text-text-primary font-bold">Reports & Analytics</h2>
@@ -149,6 +150,6 @@ export function ReportsPage() {
         {activeTab === "suppliers" && <SupplierReportView />}
         {activeTab === "products" && <ProductReportView />}
       </div>
-    </div>
+    </PageContainer>
   );
 }

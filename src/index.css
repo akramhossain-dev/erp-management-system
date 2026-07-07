@@ -296,17 +296,23 @@ body {
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
-  transition:
-    background var(--transition-slow),
-    border-color var(--transition-slow),
-    box-shadow var(--transition-slow);
+  transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 1.25rem; /* 20px default/mobile */
+}
+
+@media (min-width: 768px) {
+  .card-glass {
+    padding: 1.5rem; /* 24px on tablet/desktop */
+  }
 }
 
 .card-glass:hover {
   background: var(--glass-bg-hover);
   border-color: var(--glass-border-hover);
+  box-shadow: var(--shadow-lg), var(--glow-primary);
+  transform: translateY(-2px);
 }
 
 .card-kpi {
@@ -314,7 +320,7 @@ body {
   backdrop-filter: blur(12px) saturate(180%);
   -webkit-backdrop-filter: blur(12px) saturate(180%);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius-2xl);
+  border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: var(--shadow-md);
   transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
@@ -328,6 +334,7 @@ body {
   box-shadow: var(--shadow-lg), var(--glow-primary);
   transform: translateY(-2px);
 }
+
 
 /* ================================================
    Badge / Status Utilities
@@ -382,8 +389,12 @@ body {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-subtle);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(180%);
+  -webkit-backdrop-filter: blur(12px) saturate(180%);
+  box-shadow: var(--shadow-md);
 }
 
 .erp-table {

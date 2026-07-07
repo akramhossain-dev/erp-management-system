@@ -18,7 +18,7 @@ import { useMonthlySalesCount } from "@/features/dashboard/hooks/useDashboardSta
 
 function ChartSkeleton() {
   return (
-    <div className="h-56 flex flex-col gap-3 justify-end px-2">
+    <div className="h-64 flex flex-col gap-3 justify-end px-2">
       <div className="flex items-end gap-4 h-full">
         {[60, 40, 80, 55, 70, 45].map((h, i) => (
           <div key={i} className="flex-1 flex gap-1 items-end">
@@ -105,7 +105,7 @@ export function SalesChart() {
       {isLoading ? (
         <ChartSkeleton />
       ) : isEmpty ? (
-        <div className="h-56 flex flex-col items-center justify-center gap-3">
+        <div className="h-64 flex flex-col items-center justify-center gap-3">
           <div
             className="w-12 h-12 rounded-xl flex items-center justify-center"
             style={{ background: "rgba(16,185,129,0.06)", border: "1px solid rgba(16,185,129,0.12)" }}
@@ -124,7 +124,7 @@ export function SalesChart() {
           </p>
         </div>
       ) : (
-        <div className="h-56">
+        <div className="h-64">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={data ?? []}

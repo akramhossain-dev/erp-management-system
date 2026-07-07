@@ -14,7 +14,6 @@ import { toast } from "sonner";
 import { useAuthContext } from "@/context/AuthContext";
 import { useAuth } from "@/features/auth";
 import { MenuIcon, BellIcon, LogOutIcon } from "@/components/common/NavIcons";
-import { cn } from "@/lib/utils";
 import { ROUTES } from "@/utils/constants";
 
 // ─── Route → Page meta ────────────────────────────────────────────────────────

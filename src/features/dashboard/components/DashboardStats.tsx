@@ -108,7 +108,7 @@ export function DashboardStats() {
 
   return (
     <section aria-label="Key performance indicators">
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {cards.map((card, i) => (
           <KpiCard key={card.title} {...card} isLoading={isLoading} staggerIndex={i} />
         ))}

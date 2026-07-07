@@ -16,6 +16,8 @@
  */
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "@/context/AuthContext";
+import { Button } from "@/components/ui/button";
+import { PageContainer } from "@/components/common";
 import {
   DashboardStats,
   RevenueChart,
@@ -29,21 +31,14 @@ import { QUERY_KEYS } from "@/utils/constants";
 
 function RefreshButton({ onRefresh }: { onRefresh: () => void }) {
   return (
-    <button
+    <Button
       id="dashboard-refresh-btn"
+      variant="outline"
+      size="sm"
       onClick={onRefresh}
-      className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-caption font-medium text-text-tertiary hover:text-text-secondary transition-all duration-150"
+      className="flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-caption font-medium text-text-secondary border-border-subtle hover:text-text-primary hover:bg-white/5 transition-all duration-150"
       style={{
         background: "rgba(255,255,255,0.04)",
-        border:     "1px solid var(--border-subtle)",
-      }}
-      onMouseEnter={(e) => {
-        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.07)";
-        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-        (e.currentTarget as HTMLElement).style.borderColor = "var(--border-subtle)";
       }}
       aria-label="Refresh dashboard data"
     >
@@ -64,7 +59,7 @@ function RefreshButton({ onRefresh }: { onRefresh: () => void }) {
         <path d="M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
       </svg>
       Refresh
-    </button>
+    </Button>
   );
 }
 
@@ -107,10 +102,10 @@ export function DashboardPage() {
   const dateStr   = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
   return (
-    <div className="flex flex-col gap-8 max-w-[1400px]">
+    <PageContainer variant="wide">
 
       {/* ── Page Header ──────────────────────────────────────────────────── */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
           <div className="flex items-center gap-3 mb-1">
             <h2 className="text-h2 text-text-primary font-bold tracking-tight">
@@ -138,7 +133,7 @@ export function DashboardPage() {
       {/* ── Charts Row ───────────────────────────────────────────────────── */}
       <section aria-label="Revenue and sales charts">
         <SectionLabel>Revenue & Sales</SectionLabel>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <RevenueChart />
           </div>
@@ -151,12 +146,12 @@ export function DashboardPage() {
       {/* ── Bottom Row ───────────────────────────────────────────────────── */}
       <section aria-label="Recent activity and alerts">
         <SectionLabel>Activity & Alerts</SectionLabel>
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           <RecentActivity />
           <LowStockAlert />
         </div>
       </section>
 
-    </div>
+    </PageContainer>
   );
 }

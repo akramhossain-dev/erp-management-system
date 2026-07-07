@@ -4,3 +4,4 @@
 export { KpiCard }    from "./KpiCard";
 export { ConfirmDialog } from "./ConfirmDialog";
 export { PageHeader } from "./PageHeader";
+export { PageContainer } from "./PageContainer/PageContainer";

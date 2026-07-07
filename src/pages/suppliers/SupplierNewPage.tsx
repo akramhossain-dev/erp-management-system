@@ -2,6 +2,7 @@
  * SupplierNewPage.tsx — /suppliers/new
  */
 import { Link } from "react-router-dom";
+import { PageContainer } from "@/components/common";
 import { SupplierForm } from "@/features/suppliers";
 import { useCreateSupplier } from "@/features/suppliers";
 import { ROUTES } from "@/utils/constants";
@@ -10,7 +11,7 @@ export function SupplierNewPage() {
   const { mutate: createSupplier, isPending } = useCreateSupplier();
 
   return (
-    <div className="flex flex-col gap-6 max-w-3xl">
+    <PageContainer variant="narrow">
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.SUPPLIERS} className="hover:text-text-secondary transition-colors">
@@ -36,6 +37,6 @@ export function SupplierNewPage() {
         onSubmit={createSupplier}
         isSubmitting={isPending}
       />
-    </div>
+    </PageContainer>
   );
 }

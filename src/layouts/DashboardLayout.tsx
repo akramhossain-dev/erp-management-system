@@ -43,7 +43,9 @@ export function DashboardLayout() {
           minHeight: "100vh",
           display: "flex",
           flexDirection: "column",
-          transition: "margin-left 300ms ease-in-out",
+          transition: "margin-left 300ms ease-in-out, width 300ms ease-in-out, max-width 300ms ease-in-out",
+          width: `calc(100% - ${mainOffset}px)`,
+          maxWidth: `calc(100% - ${mainOffset}px)`,
         }}
       >
         {/* Sticky top navbar */}
@@ -54,11 +56,9 @@ export function DashboardLayout() {
 
         {/* Page content area */}
         <main
+          className="flex-1 w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10 pb-16 sm:pb-20 lg:pb-24 box-border overflow-x-hidden"
           style={{
-            flex: 1,
-            padding: "28px",
             minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
-            boxSizing: "border-box",
           }}
         >
           <Outlet />
