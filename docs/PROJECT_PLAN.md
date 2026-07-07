@@ -1,8 +1,8 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 1 — Project Setup & Infrastructure (Complete)  
-> **Status:** ✅ Phase 1 Complete | 🔲 Phase 2 Pending  
+> **Phase:** 3 — Authentication System (Complete)  
+> **Status:** ✅ Phase 1 Complete | ✅ Phase 2 Complete | ✅ Phase 3 Complete  
 > **Last Updated:** 2026-07-07
 
 ---
@@ -58,6 +58,117 @@
 - ✅ Folder structure complete
 - ✅ Environment variables prepared (.env.example)
 - ✅ Production build succeeds (zero errors)
+
+---
+
+## Phase 3 — Authentication System ✅
+
+> **Completed:** 2026-07-07
+
+### Auth Architecture
+
+```
+User (browser)
+    │
+    │ React Hook Form (Zod validation)
+    ▼
+LoginForm / RegisterForm (features/auth/components/)
+    │
+    │ useAuth() hook
+    ▼
+authService.ts  (signIn / signUp / signOut)
+    │
+    │ @supabase/supabase-js
+    ▼
+Supabase Auth (JWT, sessions, email/password)
+    │
+    │ handle_new_user() TRIGGER (DB level)
+    ▼
+public.users (profile row auto-created)
+```
+
+### Files Created / Modified
+
+| File | Status | Purpose |
+|------|--------|---------|
+| `src/features/auth/schemas/authSchemas.ts` | NEW | Zod schemas: login + register (strong password rules) |
+| `src/features/auth/services/authService.ts` | UPDATED | Complete signIn/signUp/signOut with error mapping |
+| `src/features/auth/hooks/useAuth.ts` | UPDATED | login/register/logout mutations + isMutating state |
+| `src/features/auth/components/LoginForm.tsx` | NEW | Email + password form (RHF + Zod) |
+| `src/features/auth/components/RegisterForm.tsx` | NEW | Full name + email + password + confirm + email confirmation flow |
+| `src/features/auth/components/PasswordInput.tsx` | NEW | Password field with show/hide toggle |
+| `src/features/auth/components/PasswordStrength.tsx` | NEW | 4-segment strength bar + rules checklist |
+| `src/features/auth/components/FormFieldWrapper.tsx` | NEW | Label + error message wrapper |
+| `src/features/auth/index.ts` | UPDATED | Barrel exports all auth feature items |
+| `src/context/AuthContext.tsx` | UPDATED | Adds logout() action, uses authService.onAuthStateChange |
+| `src/pages/auth/LoginPage.tsx` | UPDATED | Renders LoginForm inside AuthLayout |
+| `src/pages/auth/RegisterPage.tsx` | UPDATED | Renders RegisterForm inside AuthLayout |
+| `src/pages/DashboardPage.tsx` | UPDATED | Phase 3 placeholder with user info + logout button |
+| `src/routes/AppRoutes.tsx` | UPDATED | Wires all real pages; protected routes for all ERP modules |
+| `src/App.tsx` | UPDATED | Adds Sonner Toaster with ERP dark theme styling |
+| `src/components/ui/sonner.tsx` | UPDATED | Removed next-themes dependency; custom dark theme |
+| `src/lib/supabase.ts` | UPDATED | Safe init: validates URL format before createClient |
+
+### Security Decisions
+
+| Decision | Implementation |
+|----------|----------------|
+| Password validation | Min 8 chars + 1 uppercase + 1 number (Zod + visual indicator) |
+| Error messages | Supabase technical errors remapped to friendly messages |
+| Protected routes | ProtectedRoute component with loading state (no flash) |
+| Auth state | Single source of truth in AuthContext (no prop drilling) |
+| Session persistence | localStorage (Supabase default) + auto token refresh |
+| Email trimming | All emails lowercased and trimmed before Supabase call |
+| DB-level security | RLS on all tables (set up in Phase 2) |
+
+### Auth Flow Diagram
+
+```
+Registration:
+  Form submit → Zod validate → authService.signUp(email, password, full_name)
+      → Supabase creates auth.users row
+      → handle_new_user() TRIGGER creates public.users profile
+      → Session returned → navigate to /dashboard
+      (or show email confirmation screen if Supabase email confirm is ON)
+
+Login:
+  Form submit → Zod validate → authService.signIn(email, password)
+      → Supabase validates credentials → returns JWT session
+      → AuthContext.onAuthStateChange fires SIGNED_IN
+      → navigate to /dashboard
+
+Logout:
+  User clicks logout → useAuth().logout() → authService.signOut()
+      → Supabase clears session → localStorage cleared
+      → AuthContext.onAuthStateChange fires SIGNED_OUT
+      → navigate to /login
+
+Protected Route:
+  Navigate to /dashboard (or any ERP route)
+      → ProtectedRoute checks isLoading (prevents flash)
+      → if !isAuthenticated → <Navigate to="/login" replace />
+      → if authenticated → renders DashboardLayout + child page
+```
+
+### Phase 3 Verification Checklist
+
+- ✅ User registration form (full_name, email, password, confirm_password)
+- ✅ Strong password validation (length, uppercase, number)
+- ✅ Password strength indicator with live checklist
+- ✅ Password show/hide toggle
+- ✅ User login form (email, password)
+- ✅ Form validation with field-level error messages
+- ✅ Supabase signIn / signUp / signOut wired
+- ✅ AuthContext provides user, session, isAuthenticated, isLoading, logout
+- ✅ useAuth() hook provides login, register, logout + isMutating
+- ✅ Protected routes redirect to /login when unauthenticated
+- ✅ AuthLayout redirects to /dashboard when already authenticated
+- ✅ Session persists after page refresh
+- ✅ Toast notifications for all auth errors
+- ✅ Email confirmation flow handled (shows confirmation screen)
+- ✅ All ERP module routes protected (products, customers, suppliers, purchases, sales, reports)
+- ✅ Dashboard placeholder shows user info + functional logout
+- ✅ Production build: zero TypeScript errors
 
 ### Setup Instructions
 

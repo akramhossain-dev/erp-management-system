@@ -2,17 +2,18 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { AuthLayout } from "@/layouts/AuthLayout";
 import { DashboardLayout } from "@/layouts/DashboardLayout";
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { RegisterPage } from "@/pages/auth/RegisterPage";
+import { DashboardPage } from "@/pages/DashboardPage";
 import { ROUTES } from "@/utils/constants";
 
-// ─── Page Imports (lazy-loaded in future phases) ──────────────────────────────
-// These pages will be implemented in Phase 2+.
-// Using placeholder components until then.
+// ─── Placeholder for Phase 4+ pages ──────────────────────────────────────────
 
 function ComingSoonPage({ title }: { title: string }) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-      <div className="w-16 h-16 rounded-2xl glass-default flex items-center justify-center">
-        <span className="text-3xl">🚧</span>
+      <div className="w-16 h-16 rounded-2xl glass-default flex items-center justify-center text-3xl" aria-hidden="true">
+        🚧
       </div>
       <h1 className="text-h2 text-text-primary">{title}</h1>
       <p className="text-body text-text-secondary">
@@ -23,12 +24,12 @@ function ComingSoonPage({ title }: { title: string }) {
 }
 
 /**
- * AppRoutes — defines all application routes.
+ * AppRoutes — complete application routing.
  *
- * Route structure:
- * - Public routes:  /login, /register (wrapped in AuthLayout)
- * - Protected routes: /dashboard and all ERP modules (wrapped in DashboardLayout + ProtectedRoute)
- * - Root /: redirects to /dashboard
+ * Structure:
+ * - /login, /register           → public (AuthLayout)
+ * - /dashboard, /products, etc  → protected (ProtectedRoute + DashboardLayout)
+ * - /                           → redirects to /dashboard
  */
 export function AppRoutes() {
   return (
@@ -36,13 +37,13 @@ export function AppRoutes() {
       {/* Root redirect */}
       <Route path={ROUTES.HOME} element={<Navigate to={ROUTES.DASHBOARD} replace />} />
 
-      {/* ── Public Routes (Auth) ───────────────────────────────────────────── */}
+      {/* ── Public Auth Routes ─────────────────────────────────────────────── */}
       <Route element={<AuthLayout />}>
-        <Route path={ROUTES.LOGIN} element={<ComingSoonPage title="Login" />} />
-        <Route path={ROUTES.REGISTER} element={<ComingSoonPage title="Register" />} />
+        <Route path={ROUTES.LOGIN}    element={<LoginPage />} />
+        <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
       </Route>
 
-      {/* ── Protected Routes (Dashboard) ──────────────────────────────────── */}
+      {/* ── Protected Dashboard Routes ──────────────────────────────────────── */}
       <Route
         element={
           <ProtectedRoute>
@@ -51,44 +52,44 @@ export function AppRoutes() {
         }
       >
         {/* Dashboard */}
-        <Route path={ROUTES.DASHBOARD} element={<ComingSoonPage title="Dashboard" />} />
+        <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
 
-        {/* Products */}
-        <Route path={ROUTES.PRODUCTS} element={<ComingSoonPage title="Products" />} />
+        {/* Products — Phase 4 */}
+        <Route path={ROUTES.PRODUCTS}     element={<ComingSoonPage title="Products" />} />
         <Route path={ROUTES.PRODUCTS_NEW} element={<ComingSoonPage title="New Product" />} />
-        <Route path="/products/:id/edit" element={<ComingSoonPage title="Edit Product" />} />
+        <Route path="/products/:id/edit"  element={<ComingSoonPage title="Edit Product" />} />
 
-        {/* Customers */}
-        <Route path={ROUTES.CUSTOMERS} element={<ComingSoonPage title="Customers" />} />
+        {/* Customers — Phase 4 */}
+        <Route path={ROUTES.CUSTOMERS}     element={<ComingSoonPage title="Customers" />} />
         <Route path={ROUTES.CUSTOMERS_NEW} element={<ComingSoonPage title="New Customer" />} />
-        <Route path="/customers/:id/edit" element={<ComingSoonPage title="Edit Customer" />} />
+        <Route path="/customers/:id/edit"  element={<ComingSoonPage title="Edit Customer" />} />
 
-        {/* Suppliers */}
-        <Route path={ROUTES.SUPPLIERS} element={<ComingSoonPage title="Suppliers" />} />
+        {/* Suppliers — Phase 4 */}
+        <Route path={ROUTES.SUPPLIERS}     element={<ComingSoonPage title="Suppliers" />} />
         <Route path={ROUTES.SUPPLIERS_NEW} element={<ComingSoonPage title="New Supplier" />} />
-        <Route path="/suppliers/:id/edit" element={<ComingSoonPage title="Edit Supplier" />} />
+        <Route path="/suppliers/:id/edit"  element={<ComingSoonPage title="Edit Supplier" />} />
 
-        {/* Purchases */}
-        <Route path={ROUTES.PURCHASES} element={<ComingSoonPage title="Purchases" />} />
+        {/* Purchases — Phase 5 */}
+        <Route path={ROUTES.PURCHASES}     element={<ComingSoonPage title="Purchases" />} />
         <Route path={ROUTES.PURCHASES_NEW} element={<ComingSoonPage title="New Purchase" />} />
-        <Route path="/purchases/:id" element={<ComingSoonPage title="Purchase Detail" />} />
+        <Route path="/purchases/:id"       element={<ComingSoonPage title="Purchase Detail" />} />
 
-        {/* Sales */}
-        <Route path={ROUTES.SALES} element={<ComingSoonPage title="Sales" />} />
+        {/* Sales — Phase 5 */}
+        <Route path={ROUTES.SALES}     element={<ComingSoonPage title="Sales" />} />
         <Route path={ROUTES.SALES_NEW} element={<ComingSoonPage title="New Sale" />} />
-        <Route path="/sales/:id" element={<ComingSoonPage title="Sale Detail" />} />
+        <Route path="/sales/:id"       element={<ComingSoonPage title="Sale Detail" />} />
         <Route path="/sales/:id/invoice" element={<ComingSoonPage title="Invoice" />} />
 
-        {/* Reports */}
-        <Route path={ROUTES.REPORTS} element={<ComingSoonPage title="Reports" />} />
-        <Route path={ROUTES.REPORTS_PRODUCTS} element={<ComingSoonPage title="Product Reports" />} />
+        {/* Reports — Phase 6 */}
+        <Route path={ROUTES.REPORTS}           element={<ComingSoonPage title="Reports" />} />
+        <Route path={ROUTES.REPORTS_PRODUCTS}  element={<ComingSoonPage title="Product Reports" />} />
         <Route path={ROUTES.REPORTS_CUSTOMERS} element={<ComingSoonPage title="Customer Reports" />} />
         <Route path={ROUTES.REPORTS_SUPPLIERS} element={<ComingSoonPage title="Supplier Reports" />} />
         <Route path={ROUTES.REPORTS_PURCHASES} element={<ComingSoonPage title="Purchase Reports" />} />
-        <Route path={ROUTES.REPORTS_SALES} element={<ComingSoonPage title="Sales Reports" />} />
+        <Route path={ROUTES.REPORTS_SALES}     element={<ComingSoonPage title="Sales Reports" />} />
       </Route>
 
-      {/* 404 fallback */}
+      {/* 404 — redirect to dashboard (ProtectedRoute will handle auth) */}
       <Route path="*" element={<Navigate to={ROUTES.DASHBOARD} replace />} />
     </Routes>
   );
