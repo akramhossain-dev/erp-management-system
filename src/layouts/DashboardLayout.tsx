@@ -56,9 +56,10 @@ export function DashboardLayout() {
 
         {/* Page content area */}
         <main
-          className="flex-1 w-full px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-10 pb-16 sm:pb-20 lg:pb-24 box-border overflow-x-hidden"
+          className="flex-1 w-full box-border overflow-x-hidden"
           style={{
             minHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)`,
+            padding: isDesktop ? "32px 40px 64px" : "20px 20px 48px",
           }}
         >
           <Outlet />

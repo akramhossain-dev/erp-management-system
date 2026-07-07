@@ -17,6 +17,7 @@ interface ReportTableProps<T> {
   columns:    ReportColumnConfig<T>[];
   isLoading:  boolean;
   summaryLabel?: string;
+  className?: string;
 }
 
 export function ReportTable<T>({
@@ -24,6 +25,7 @@ export function ReportTable<T>({
   columns,
   isLoading,
   summaryLabel = "Total Summary",
+  className,
 }: ReportTableProps<T>) {
   // Compute column totals if configured
   const hasTotals = columns.some((col) => col.totalKey !== undefined);
@@ -38,11 +40,10 @@ export function ReportTable<T>({
 
   return (
     <div
-      className="relative overflow-hidden rounded-2xl"
-      style={{ border: "1px solid var(--border-subtle)" }}
+      className={cn("erp-table-wrap relative overflow-hidden rounded-2xl", className)}
     >
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse" aria-label="Report results">
+        <table className="erp-table w-full text-left border-collapse" aria-label="Report results">
           <thead>
             <tr style={{ background: "rgba(255,255,255,0.02)", borderBottom: "1px solid var(--border-subtle)" }}>
               {columns.map((col, index) => (

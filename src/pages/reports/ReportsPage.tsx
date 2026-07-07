@@ -117,8 +117,8 @@ export function ReportsPage() {
       </div>
 
       {/* Tabs list container */}
-      <div className="flex items-center overflow-x-auto pb-1.5 scrollbar-thin border-b" style={{ borderColor: "var(--border-subtle)" }} role="tablist" aria-label="Reports categories">
-        <div className="flex gap-1.5">
+      <div className="flex items-center overflow-x-auto pb-3 scrollbar-thin border-b" style={{ borderColor: "var(--border-subtle)" }} role="tablist" aria-label="Reports categories">
+        <div className="flex gap-2">
           {TABS.map((tab) => (
             <button
               id={`tab-btn-${tab.id}`}
@@ -128,7 +128,7 @@ export function ReportsPage() {
               aria-controls={`report-panel-${tab.id}`}
               onClick={() => handleTabClick(tab.id)}
               className={cn(
-                "flex items-center gap-2 h-9 px-4 rounded-xl text-body-sm font-semibold transition-all flex-shrink-0 cursor-pointer",
+                "flex items-center gap-2.5 h-11 px-5.5 rounded-xl text-body font-semibold transition-all flex-shrink-0 cursor-pointer",
                 activeTab === tab.id
                   ? "text-primary-400 font-bold"
                   : "text-text-muted hover:text-text-secondary hover:bg-white/5"
@@ -143,7 +143,12 @@ export function ReportsPage() {
       </div>
 
       {/* Dynamic Report Panel Content */}
-      <div id={`report-panel-${activeTab}`} role="tabpanel" aria-labelledby={`tab-btn-${activeTab}`}>
+      <div
+        id={`report-panel-${activeTab}`}
+        role="tabpanel"
+        aria-labelledby={`tab-btn-${activeTab}`}
+        className="mt-6 md:mt-8"
+      >
         {activeTab === "sales" && <SalesReportView />}
         {activeTab === "purchases" && <PurchaseReportView />}
         {activeTab === "customers" && <CustomerReportView />}

@@ -31,11 +31,11 @@ export function ReportFilters({
 }: ReportFiltersProps) {
 
   const selectClass = cn(
-    "h-9 px-3 rounded-xl text-body-sm text-text-primary pr-8 appearance-none bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all cursor-pointer",
+    "h-10 pl-5 pr-11 rounded-xl text-body text-text-primary appearance-none bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all cursor-pointer",
   );
 
   const inputClass = cn(
-    "h-9 px-3 rounded-xl text-body-sm text-text-primary bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
+    "h-10 px-5 rounded-xl text-body text-text-primary bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
   );
 
   const showSearch     = reportType === "products" || reportType === "customers" || reportType === "suppliers";
@@ -60,7 +60,7 @@ export function ReportFilters({
         <div className="flex flex-col gap-1.5 min-w-[200px] max-w-xs flex-1">
           <label htmlFor="report-search-term" className="text-caption text-text-muted font-medium">Search</label>
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"/>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -72,8 +72,8 @@ export function ReportFilters({
               placeholder="Type to search…"
               value={filters.search}
               onChange={(e) => onUpdateFilters({ search: e.target.value })}
-              className="pl-8.5 h-9 text-body-sm"
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              className="h-10 text-body"
+              style={{ paddingLeft: "2.75rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
               autoComplete="off"
             />
           </div>
@@ -90,7 +90,7 @@ export function ReportFilters({
               value={filters.category}
               onChange={(e) => onUpdateFilters({ category: e.target.value })}
               className={cn(selectClass, "w-full")}
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ paddingLeft: "1.25rem", paddingRight: "2.75rem", background: "rgba(255,255,255,0.04)" }}
             >
               <option value="" style={{ background: "var(--bg-surface-300)" }}>All Categories</option>
               {categories.map((cat) => (
@@ -99,7 +99,7 @@ export function ReportFilters({
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -118,7 +118,7 @@ export function ReportFilters({
               value={filters.supplierId}
               onChange={(e) => onUpdateFilters({ supplierId: e.target.value })}
               className={cn(selectClass, "w-full")}
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ paddingLeft: "1.25rem", paddingRight: "2.75rem", background: "rgba(255,255,255,0.04)" }}
             >
               <option value="" style={{ background: "var(--bg-surface-300)" }}>All Suppliers</option>
               {suppliers.map((s) => (
@@ -127,7 +127,7 @@ export function ReportFilters({
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -146,7 +146,7 @@ export function ReportFilters({
               value={filters.customerId}
               onChange={(e) => onUpdateFilters({ customerId: e.target.value })}
               className={cn(selectClass, "w-full")}
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ paddingLeft: "1.25rem", paddingRight: "2.75rem", background: "rgba(255,255,255,0.04)" }}
             >
               <option value="" style={{ background: "var(--bg-surface-300)" }}>All Customers</option>
               {customers.map((c) => (
@@ -155,7 +155,7 @@ export function ReportFilters({
                 </option>
               ))}
             </select>
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5">
                 <polyline points="6 9 12 15 18 9"/>
               </svg>
@@ -175,7 +175,7 @@ export function ReportFilters({
               value={filters.dateFrom}
               onChange={(e) => onUpdateFilters({ dateFrom: e.target.value })}
               className={cn(inputClass, "w-full")}
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ paddingLeft: "1.25rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
             />
           </div>
           <div className="flex flex-col gap-1.5 min-w-[140px]">
@@ -186,7 +186,7 @@ export function ReportFilters({
               value={filters.dateTo}
               onChange={(e) => onUpdateFilters({ dateTo: e.target.value })}
               className={cn(inputClass, "w-full")}
-              style={{ background: "rgba(255,255,255,0.04)" }}
+              style={{ paddingLeft: "1.25rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
             />
           </div>
         </>
@@ -197,9 +197,8 @@ export function ReportFilters({
         <Button
           id="report-filter-reset-btn"
           variant="ghost"
-          size="sm"
           onClick={onReset}
-          className="h-9 px-3 text-body-sm text-text-muted hover:text-text-secondary gap-1.5 mt-4 sm:mt-0"
+          className="h-10 px-4 text-body text-text-muted hover:text-text-secondary gap-1.5 mt-4 sm:mt-0"
         >
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>

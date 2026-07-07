@@ -250,7 +250,7 @@ export function ProductForm({
 
         {/* ── Basic Information ──────────────────────────────────────────── */}
         <div
-          className="card-glass p-6 flex flex-col gap-5"
+          className="card-glass p-5 sm:p-6 flex flex-col gap-5"
           aria-label="Basic Information"
         >
           <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
@@ -342,7 +342,7 @@ export function ProductForm({
         </div>
 
         {/* ── Pricing ────────────────────────────────────────────────────── */}
-        <div className="card-glass p-6 flex flex-col gap-5" aria-label="Pricing">
+        <div className="card-glass p-5 sm:p-6 flex flex-col gap-5" aria-label="Pricing">
           <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)" }} aria-hidden="true">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -400,7 +400,7 @@ export function ProductForm({
         </div>
 
         {/* ── Inventory ──────────────────────────────────────────────────── */}
-        <div className="card-glass p-6 flex flex-col gap-5" aria-label="Inventory">
+        <div className="card-glass p-5 sm:p-6 flex flex-col gap-5" aria-label="Inventory">
           <div className="flex items-start justify-between gap-4">
             <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
               <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(139,92,246,0.12)", border: "1px solid rgba(139,92,246,0.2)" }} aria-hidden="true">

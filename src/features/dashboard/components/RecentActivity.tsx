@@ -3,6 +3,7 @@
  * Shows the last 5 transactions from each, sorted by date.
  */
 import { useRecentSales, useRecentPurchases } from "@/features/dashboard/hooks/useDashboardStats";
+import { formatCurrency } from "@/utils/formatters";
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
@@ -51,7 +52,7 @@ function formatDate(dateStr: string): string {
 }
 
 function formatAmount(amount: number): string {
-  return `$${Number(amount).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return formatCurrency(amount);
 }
 
 // ─── Activity item type ───────────────────────────────────────────────────────

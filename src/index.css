@@ -299,12 +299,18 @@ body {
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-md);
   transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
-  padding: 1.25rem; /* 20px default/mobile */
+  padding: 1rem; /* 16px padding on mobile */
 }
 
-@media (min-width: 768px) {
+@media (min-width: 640px) {
   .card-glass {
-    padding: 1.5rem; /* 24px on tablet/desktop */
+    padding: 1.25rem; /* 20px padding on tablet */
+  }
+}
+
+@media (min-width: 1024px) {
+  .card-glass {
+    padding: 1.5rem; /* 24px padding on desktop */
   }
 }
 
