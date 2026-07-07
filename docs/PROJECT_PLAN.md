@@ -1,9 +1,110 @@
 # ERP Management System — Project Plan
 
 > **Version:** 1.0.0  
-> **Phase:** 4 — ERP Layout & Dashboard System (Complete)  
-> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 Complete  
+> **Phase:** 5 — Product Management Module (Complete)  
+> **Status:** ✅ Phase 1 | ✅ Phase 2 | ✅ Phase 3 | ✅ Phase 4 | ✅ Phase 5 Complete  
 > **Last Updated:** 2026-07-07
+
+---
+
+## Phase 5 — Product Management Module ✅
+
+> **Completed:** 2026-07-07
+
+### Module Architecture
+
+```
+features/products/
+├── schemas/
+│   └── productSchemas.ts     → Zod schema, PRODUCT_CATEGORIES, form defaults
+├── services/
+│   └── productService.ts     → Supabase CRUD (getProducts, getById,
+│                                create, update, delete, checkSku, getCategories)
+├── hooks/
+│   ├── useProducts.ts        → list query (search/filter/pagination)
+│   └── useProductMutations.ts → create/update/delete mutations
+└── components/
+    ├── ProductTable.tsx       → data table with stock badges, pagination
+    ├── ProductFilters.tsx     → search + category + stock status filters
+    ├── ProductForm.tsx        → create/edit form (RHF + Zod, margin preview)
+    └── ProductDetails.tsx    → read-only product detail view
+
+components/common/ConfirmDialog/ → reusable delete confirmation modal
+
+pages/products/
+├── ProductsPage.tsx          → /products  (list + filters + table)
+├── ProductNewPage.tsx        → /products/new (create form)
+└── ProductEditPage.tsx       → /products/:id/edit (edit form)
+```
+
+### CRUD Workflow
+
+| Operation | Service Function | Hook | Route |
+|-----------|-----------------|------|-------|
+| List      | `getProducts()`  | `useProducts()` | GET /products |
+| Read      | `getProductById()` | `useProduct(id)` | GET /products/:id/edit |
+| Create    | `createProduct()` | `useCreateProduct()` | POST /products/new |
+| Update    | `updateProduct()` | `useUpdateProduct(id)` | PATCH /products/:id/edit |
+| Delete    | `deleteProduct()` | `useDeleteProduct()` | DELETE (inline) |
+
+### Data Flow
+
+```
+ProductsPage
+    ↓
+useProducts (TanStack Query)
+    ↓
+productService.getProducts({ filters, page, pageSize })
+    ↓
+supabase.from("products").select("*", { count: "exact" }).order().range()
+    ↓
+PostgreSQL products table (RLS scoped to user_id)
+```
+
+### Validation Rules
+
+| Field | Rules |
+|-------|-------|
+| `name` | Required, max 200 chars |
+| `sku` | Required, max 50 chars, `[A-Za-z0-9_-]+` regex, unique per user |
+| `category` | Optional, max 100 chars, from PRODUCT_CATEGORIES |
+| `description` | Optional, max 1000 chars |
+| `purchase_price` | Required, ≥ 0 |
+| `selling_price` | Required, ≥ 0 |
+| `stock_quantity` | Required, integer, ≥ 0 |
+| `min_stock` | Required, integer, ≥ 0 |
+
+### Search & Filtering
+
+- **Text search**: `name.ilike.%term%` OR `sku.ilike.%term%` (Supabase server-side)
+- **Debounce**: 350ms delay prevents excessive API calls
+- **Category**: Dropdown with predefined + DB categories merged
+- **Stock status**: all / in_stock (qty > 0) / low_stock (0 < qty ≤ min_stock) / out_of_stock (qty = 0)
+- **Pagination**: 10 per page, server-side with count
+
+### Dashboard Integration
+
+The dashboard KPI "Total Products" is updated automatically via:
+- `useCreateProduct` → invalidates `QUERY_KEYS.DASHBOARD`
+- `useDeleteProduct` → invalidates `QUERY_KEYS.DASHBOARD`
+
+### Phase 5 Verification Checklist
+
+- ✅ productService: getProducts (search + filter + pagination)
+- ✅ productService: createProduct with SKU uniqueness + user_id injection
+- ✅ productService: updateProduct with typed Supabase Update payload
+- ✅ productService: deleteProduct with FK constraint error handling
+- ✅ productService: checkSkuExists, getCategories
+- ✅ productSchemas: Zod v4 validation, SKU regex, PRODUCT_CATEGORIES
+- ✅ useProducts: filter state, debounced search, pagination, placeholderData
+- ✅ useProductMutations: invalidates products list + dashboard KPI
+- ✅ ProductForm: create/edit mode, gross profit margin preview
+- ✅ ProductTable: StockBadge, skeleton rows, empty state, pagination
+- ✅ ProductFilters: search + category + stock status + clear
+- ✅ ProductDetails: read-only with stock progress bar
+- ✅ ConfirmDialog: reusable danger modal for delete
+- ✅ Routes: /products, /products/new, /products/:id/edit live
+- ✅ Production build: zero TypeScript errors (2,628 modules)
 
 ---
 

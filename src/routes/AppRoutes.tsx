@@ -5,6 +5,10 @@ import { DashboardLayout } from "@/layouts/DashboardLayout";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { RegisterPage } from "@/pages/auth/RegisterPage";
 import { DashboardPage } from "@/pages/DashboardPage";
+// ─── Phase 5: Product pages ───────────────────────────────────────────────────
+import { ProductsPage }   from "@/pages/products/ProductsPage";
+import { ProductNewPage } from "@/pages/products/ProductNewPage";
+import { ProductEditPage } from "@/pages/products/ProductEditPage";
 import { ROUTES } from "@/utils/constants";
 
 // ─── Placeholder for Phase 4+ pages ──────────────────────────────────────────
@@ -54,10 +58,10 @@ export function AppRoutes() {
         {/* Dashboard */}
         <Route path={ROUTES.DASHBOARD} element={<DashboardPage />} />
 
-        {/* Products — Phase 4 */}
-        <Route path={ROUTES.PRODUCTS}     element={<ComingSoonPage title="Products" />} />
-        <Route path={ROUTES.PRODUCTS_NEW} element={<ComingSoonPage title="New Product" />} />
-        <Route path="/products/:id/edit"  element={<ComingSoonPage title="Edit Product" />} />
+        {/* Products — Phase 5 ✅ */}
+        <Route path={ROUTES.PRODUCTS}     element={<ProductsPage />} />
+        <Route path={ROUTES.PRODUCTS_NEW} element={<ProductNewPage />} />
+        <Route path="/products/:id/edit"  element={<ProductEditPage />} />
 
         {/* Customers — Phase 4 */}
         <Route path={ROUTES.CUSTOMERS}     element={<ComingSoonPage title="Customers" />} />
