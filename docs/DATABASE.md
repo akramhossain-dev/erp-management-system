@@ -350,18 +350,19 @@ For each purchase_item in this completed purchase:
 ### 5.2 Sale Completion — Stock Decrease
 
 ```
-User marks sale status → 'completed'
+User marks sale status → 'completed' OR creates a completed sale initially
             │
             ▼
-DB Trigger: on_sale_completed fires
-  (AFTER UPDATE OF status ON sales)
+DB Trigger: on_sale_completed (on sales status update)
+            OR
+DB Trigger: on_sale_item_inserted (on sale_items insert)
             │
             ▼
 Step 1: VALIDATE all items
   FOR each sale_item:
     IF products.stock_quantity < sale_item.quantity THEN
       ❌ RAISE EXCEPTION 'Insufficient stock for [product_name]'
-         Transaction ROLLS BACK — sale stays 'pending'
+         Transaction ROLLS BACK — sale stays 'pending' or insert fails
             │
             ▼  (only if all validations pass)
 Step 2: DEDUCT stock
@@ -374,7 +375,9 @@ Step 2: DEDUCT stock
    ERRCODE: P0001 returned to application on failure.
 ```
 
-**Function:** `decrease_stock_on_sale_complete()` — SECURITY DEFINER, validates then deducts.
+**Functions:**
+- `decrease_stock_on_sale_complete()` — SECURITY DEFINER, fires AFTER UPDATE OF status ON sales.
+- `decrease_stock_on_sale_item_insert()` — SECURITY DEFINER, fires AFTER INSERT ON sale_items if parent status is 'completed'.
 
 ---
 
@@ -506,3 +509,7 @@ const { data } = await supabase.rpc('get_low_stock_products');
 ### `increase_stock_on_purchase_item_insert()` → Trigger Function
 
 Fires on `purchase_items` insert to increase stock levels if purchase is marked completed.
+
+### `decrease_stock_on_sale_item_insert()` → Trigger Function
+
+Fires on `sale_items` insert to decrease stock levels and validate stock limits (throws P0001 on failure) if sale is completed.
