@@ -1,10 +1,8 @@
 /**
  * ReportsPage.tsx — Main /reports page.
- *
- * Implements tab layout synced with nested URL paths to display different reports.
+ * Redesigned with premium tab navigation and consistent spacing.
  */
 import { useLocation, useNavigate } from "react-router-dom";
-import { cn } from "@/lib/utils";
 import { PageContainer } from "@/components/common";
 import { ROUTES } from "@/utils/constants";
 import {
@@ -17,143 +15,218 @@ import {
 
 type ReportTab = "products" | "customers" | "suppliers" | "purchases" | "sales";
 
+const TABS: { id: ReportTab; label: string; icon: React.ReactNode; color: string }[] = [
+  {
+    id: "products",
+    label: "Inventory",
+    color: "#60a5fa",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+      </svg>
+    ),
+  },
+  {
+    id: "sales",
+    label: "Sales",
+    color: "#34d399",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="12" y1="1" x2="12" y2="23"/>
+        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    ),
+  },
+  {
+    id: "purchases",
+    label: "Purchases",
+    color: "#f59e0b",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+      </svg>
+    ),
+  },
+  {
+    id: "customers",
+    label: "Customers",
+    color: "#a78bfa",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+        <circle cx="9" cy="7" r="4"/>
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+      </svg>
+    ),
+  },
+  {
+    id: "suppliers",
+    label: "Suppliers",
+    color: "#fb923c",
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="1" y="3" width="15" height="13"/>
+        <path d="M16 8h4l3 3v5h-7V8z"/>
+        <circle cx="5.5" cy="18.5" r="2.5"/>
+        <circle cx="18.5" cy="18.5" r="2.5"/>
+      </svg>
+    ),
+  },
+];
+
 export function ReportsPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Determine active tab based on sub-route URL path
   const getActiveTab = (): ReportTab => {
     const path = location.pathname;
     if (path.startsWith(ROUTES.REPORTS_SALES))     return "sales";
     if (path.startsWith(ROUTES.REPORTS_PURCHASES)) return "purchases";
     if (path.startsWith(ROUTES.REPORTS_CUSTOMERS)) return "customers";
     if (path.startsWith(ROUTES.REPORTS_SUPPLIERS)) return "suppliers";
-    return "products"; // Default
+    return "products";
   };
 
   const activeTab = getActiveTab();
+  const activeTabData = TABS.find((t) => t.id === activeTab)!;
 
   const handleTabClick = (tab: ReportTab) => {
-    switch (tab) {
-      case "sales":
-        navigate(ROUTES.REPORTS_SALES);
-        break;
-      case "purchases":
-        navigate(ROUTES.REPORTS_PURCHASES);
-        break;
-      case "customers":
-        navigate(ROUTES.REPORTS_CUSTOMERS);
-        break;
-      case "suppliers":
-        navigate(ROUTES.REPORTS_SUPPLIERS);
-        break;
-      default:
-        navigate(ROUTES.REPORTS_PRODUCTS);
-        break;
-    }
+    const routeMap: Record<ReportTab, string> = {
+      sales:     ROUTES.REPORTS_SALES,
+      purchases: ROUTES.REPORTS_PURCHASES,
+      customers: ROUTES.REPORTS_CUSTOMERS,
+      suppliers: ROUTES.REPORTS_SUPPLIERS,
+      products:  ROUTES.REPORTS_PRODUCTS,
+    };
+    navigate(routeMap[tab]);
   };
-
-  const TABS: { id: ReportTab; label: string; icon: React.ReactNode }[] = [
-    {
-      id: "products",
-      label: "Inventory Value",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        </svg>
-      ),
-    },
-    {
-      id: "sales",
-      label: "Sales Revenue",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <line x1="12" y1="1" x2="12" y2="23"/>
-          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-        </svg>
-      ),
-    },
-    {
-      id: "purchases",
-      label: "Purchases Cost",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-          <line x1="16" y1="2" x2="16" y2="6"/>
-          <line x1="8" y1="2" x2="8" y2="6"/>
-          <line x1="3" y1="10" x2="21" y2="10"/>
-        </svg>
-      ),
-    },
-    {
-      id: "customers",
-      label: "Customer Spending",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-        </svg>
-      ),
-    },
-    {
-      id: "suppliers",
-      label: "Supplier Supplies",
-      icon: (
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        </svg>
-      ),
-    },
-  ];
 
   return (
     <PageContainer variant="wide">
-      {/* Page Header */}
-      <div>
-        <h2 className="text-h2 text-text-primary font-bold">Reports & Analytics</h2>
-        <p className="text-body-sm text-text-secondary mt-1">
-          Perform accounting aggregations, filter transactions, and export CSV audit reports.
-        </p>
-      </div>
-
-      {/* Tabs list container */}
-      <div className="flex items-center overflow-x-auto pb-3 scrollbar-thin border-b" style={{ borderColor: "var(--border-subtle)" }} role="tablist" aria-label="Reports categories">
-        <div className="flex gap-2">
-          {TABS.map((tab) => (
-            <button
-              id={`tab-btn-${tab.id}`}
-              key={tab.id}
-              role="tab"
-              aria-selected={activeTab === tab.id}
-              aria-controls={`report-panel-${tab.id}`}
-              onClick={() => handleTabClick(tab.id)}
-              className={cn(
-                "flex items-center gap-2.5 h-11 px-5.5 rounded-xl text-body font-semibold transition-all flex-shrink-0 cursor-pointer",
-                activeTab === tab.id
-                  ? "text-primary-400 font-bold"
-                  : "text-text-muted hover:text-text-secondary hover:bg-white/5"
-              )}
-              style={activeTab === tab.id ? { background: "rgba(59,130,246,0.12)" } : {}}
+      {/* ── Page Header ─────────────────────────────────────────────── */}
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 6 }}>
+          <div
+            style={{
+              width: 40,
+              height: 40,
+              borderRadius: 12,
+              background: `linear-gradient(135deg, ${activeTabData.color}22, ${activeTabData.color}11)`,
+              border: `1px solid ${activeTabData.color}33`,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: activeTabData.color,
+              transition: "all 300ms ease",
+            }}
+            aria-hidden="true"
+          >
+            {activeTabData.icon}
+          </div>
+          <div>
+            <h1
+              style={{
+                fontSize: 22,
+                fontWeight: 700,
+                color: "#f1f5f9",
+                margin: 0,
+                lineHeight: 1.25,
+              }}
             >
-              {tab.icon}
-              {tab.label}
-            </button>
-          ))}
+              Reports &amp; Analytics
+            </h1>
+            <p style={{ fontSize: 13, color: "rgba(100,116,139,0.9)", margin: "2px 0 0" }}>
+              Aggregated insights, transaction history &amp; CSV exports
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Dynamic Report Panel Content */}
+      {/* ── Tab Navigation ──────────────────────────────────────────── */}
+      <div
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: 16,
+          padding: "6px",
+          display: "flex",
+          gap: 4,
+          overflowX: "auto",
+          scrollbarWidth: "none",
+          marginBottom: 28,
+          flexShrink: 0,
+        }}
+        role="tablist"
+        aria-label="Report categories"
+      >
+        {TABS.map((tab) => {
+          const isActive = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              id={`tab-btn-${tab.id}`}
+              role="tab"
+              aria-selected={isActive}
+              aria-controls={`report-panel-${tab.id}`}
+              onClick={() => handleTabClick(tab.id)}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "9px 18px",
+                borderRadius: 10,
+                border: "none",
+                cursor: "pointer",
+                fontSize: 13.5,
+                fontWeight: isActive ? 600 : 500,
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                transition: "all 200ms ease",
+                background: isActive ? `linear-gradient(135deg, ${tab.color}18, ${tab.color}0c)` : "transparent",
+                color: isActive ? tab.color : "rgba(148,163,184,0.8)",
+                boxShadow: isActive ? `0 0 0 1px ${tab.color}30` : "none",
+              }}
+              onMouseEnter={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
+                  (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!isActive) {
+                  (e.currentTarget as HTMLElement).style.background = "transparent";
+                  (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+                }
+              }}
+            >
+              <span
+                style={{
+                  display: "flex",
+                  color: isActive ? tab.color : "rgba(148,163,184,0.6)",
+                  transition: "color 200ms",
+                }}
+                aria-hidden="true"
+              >
+                {tab.icon}
+              </span>
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Report Panel ─────────────────────────────────────────────── */}
       <div
         id={`report-panel-${activeTab}`}
         role="tabpanel"
         aria-labelledby={`tab-btn-${activeTab}`}
-        className="mt-6 md:mt-8"
       >
-        {activeTab === "sales" && <SalesReportView />}
+        {activeTab === "sales"     && <SalesReportView />}
         {activeTab === "purchases" && <PurchaseReportView />}
         {activeTab === "customers" && <CustomerReportView />}
         {activeTab === "suppliers" && <SupplierReportView />}
-        {activeTab === "products" && <ProductReportView />}
+        {activeTab === "products"  && <ProductReportView />}
       </div>
     </PageContainer>
   );
