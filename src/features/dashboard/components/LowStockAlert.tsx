@@ -44,8 +44,6 @@ function SkeletonRows() {
 function StockBar({ current, min }: { current: number; min: number }) {
   const isOut = current === 0;
   const pct   = min > 0 ? Math.min((current / (min * 2)) * 100, 100) : 0;
-  const color = isOut ? "#EF4444" : "#F59E0B";
-  const bg    = isOut ? "rgba(239,68,68,0.15)" : "rgba(245,158,11,0.15)";
 
   return (
     <div

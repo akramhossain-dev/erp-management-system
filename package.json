@@ -1,11 +1,13 @@
 {
   "name": "erp-management-system",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Glass ERP — Modern full-stack Enterprise Resource Planning system built with React, TypeScript, and Supabase.",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "type-check": "tsc --noEmit",
     "lint": "oxlint",
     "preview": "vite preview"
   },

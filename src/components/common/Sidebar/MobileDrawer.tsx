@@ -215,7 +215,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
 
               {/* Items */}
               {group.items.map((item) => {
-                const isActive = item.exact
+                const isActive = (item as { exact?: boolean }).exact
                   ? location.pathname === item.to
                   : location.pathname.startsWith(item.to);
 
