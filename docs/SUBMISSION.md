@@ -167,7 +167,7 @@ Each phase used **AI planning mode** for design decisions, **AI code execution**
 
 | Resource | URL |
 |---|---|
-| **Live ERP Application** | https://glass-erp-management-system.vercel.app *(update before submission)* |
+| **Live ERP Application** | https://erp-management-system-gamma.vercel.app/ *(update before submission)* |
 | **GitHub Repository** | https://github.com/akramhossain-dev/erp-management-system *(update before submission)* |
 
 ---
