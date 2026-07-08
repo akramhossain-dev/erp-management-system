@@ -19,9 +19,9 @@ import { SalesSummary } from "./SalesSummary";
 import type { Customer, Product } from "@/types/entities";
 
 interface SalesFormProps {
-  customers:    Customer[];
-  products:     Product[];
-  onSubmit:     (values: SaleFormValues) => void;
+  customers: Customer[];
+  products: Product[];
+  onSubmit: (values: SaleFormValues) => void;
   isSubmitting: boolean;
 }
 
@@ -32,7 +32,7 @@ export function SalesForm({
   isSubmitting,
 }: SalesFormProps) {
   const methods = useForm<SaleFormValues>({
-    resolver:      zodResolver(saleSchema),
+    resolver: zodResolver(saleSchema),
     defaultValues: SALES_FORM_DEFAULTS,
   });
 
@@ -72,7 +72,7 @@ export function SalesForm({
 
   const selectClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 pl-5 pr-11 rounded-xl text-body text-text-primary appearance-none cursor-pointer",
+      "w-full h-12 pl-6 pr-12 rounded-xl text-body-lg text-text-primary appearance-none cursor-pointer",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -81,7 +81,7 @@ export function SalesForm({
 
   const inputClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 px-5 rounded-xl text-body text-text-primary",
+      "w-full h-12 px-6 rounded-xl text-body-lg text-text-primary",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -102,14 +102,14 @@ export function SalesForm({
 
             {/* Invoice Header details */}
             <div className="card-glass p-6 flex flex-col gap-5">
-              <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
+              <h2 className="text-h3 text-text-primary font-semibold flex items-center gap-2">
                 <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)" }} aria-hidden="true">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                    <polyline points="10 9 9 9 8 9"/>
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                    <polyline points="10 9 9 9 8 9" />
                   </svg>
                 </span>
                 Sales Invoice Details
@@ -117,8 +117,8 @@ export function SalesForm({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 {/* Customer select */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="customer_id" className="text-body-sm font-medium text-text-secondary">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="customer_id" className="text-body font-semibold text-text-secondary">
                     Customer <span className="text-danger-400">*</span>
                   </label>
                   <div className="relative">
@@ -126,7 +126,7 @@ export function SalesForm({
                       id="customer_id"
                       {...register("customer_id")}
                       className={selectClass(!!errors.customer_id)}
-                      style={{ background: "rgba(255,255,255,0.04)" }}
+                      style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.5rem", paddingRight: "3rem" }}
                       aria-invalid={!!errors.customer_id}
                     >
                       <option value="" style={{ background: "var(--bg-surface-300)" }}>Select customer…</option>
@@ -138,7 +138,7 @@ export function SalesForm({
                     </select>
                     <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="6 9 12 15 18 9"/>
+                        <polyline points="6 9 12 15 18 9" />
                       </svg>
                     </div>
                   </div>
@@ -150,8 +150,8 @@ export function SalesForm({
                 </div>
 
                 {/* Date */}
-                <div className="flex flex-col gap-1.5">
-                  <label htmlFor="sale_date" className="text-body-sm font-medium text-text-secondary">
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="sale_date" className="text-body font-semibold text-text-secondary">
                     Invoice Date <span className="text-danger-400">*</span>
                   </label>
                   <input
@@ -159,7 +159,7 @@ export function SalesForm({
                     type="date"
                     {...register("sale_date")}
                     className={inputClass(!!errors.sale_date)}
-                    style={{ background: "rgba(255,255,255,0.04)" }}
+                    style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.5rem", paddingRight: "1.5rem" }}
                     aria-invalid={!!errors.sale_date}
                   />
                   {errors.sale_date && (
@@ -170,20 +170,20 @@ export function SalesForm({
                 </div>
 
                 {/* Notes */}
-                <div className="flex flex-col gap-1.5 sm:col-span-2">
-                  <label htmlFor="notes" className="text-body-sm font-medium text-text-secondary">
+                <div className="flex flex-col gap-2 sm:col-span-2">
+                  <label htmlFor="notes" className="text-body font-semibold text-text-secondary">
                     Invoice Notes
                   </label>
                   <textarea
                     id="notes"
-                    rows={3}
+                    rows={5}
                     placeholder="Optional details, billing footnotes, reference codes..."
                     {...register("notes")}
                     className={cn(
-                      "w-full px-5 py-3 rounded-xl text-body text-text-primary resize-none",
+                      "w-full rounded-xl text-body-lg text-text-primary resize-none",
                       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all border-white/10 focus:border-primary-500/60",
                     )}
-                    style={{ background: "rgba(255,255,255,0.04)" }}
+                    style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.5rem", paddingRight: "1.5rem", paddingTop: "1.25rem", paddingBottom: "1.25rem" }}
                   />
                 </div>
               </div>
@@ -192,15 +192,15 @@ export function SalesForm({
             {/* Line items list */}
             <div className="card-glass p-6 flex flex-col gap-5">
               <div className="flex items-center justify-between gap-4">
-                <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
+                <h2 className="text-h3 text-text-primary font-semibold flex items-center gap-2">
                   <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(139,92,246,0.12)", border: "1px solid rgba(139,92,246,0.2)" }} aria-hidden="true">
                     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <line x1="8" y1="6" x2="21" y2="6"/>
-                      <line x1="8" y1="12" x2="21" y2="12"/>
-                      <line x1="8" y1="18" x2="21" y2="18"/>
-                      <line x1="3" y1="6" x2="3.01" y2="6"/>
-                      <line x1="3" y1="12" x2="3.01" y2="12"/>
-                      <line x1="3" y1="18" x2="3.01" y2="18"/>
+                      <line x1="8" y1="6" x2="21" y2="6" />
+                      <line x1="8" y1="12" x2="21" y2="12" />
+                      <line x1="8" y1="18" x2="21" y2="18" />
+                      <line x1="3" y1="6" x2="3.01" y2="6" />
+                      <line x1="3" y1="12" x2="3.01" y2="12" />
+                      <line x1="3" y1="18" x2="3.01" y2="18" />
                     </svg>
                   </span>
                   Invoice Items
@@ -210,21 +210,27 @@ export function SalesForm({
                   id="add-item-row-btn"
                   type="button"
                   variant="outline"
-                  size="sm"
                   onClick={handleAddItem}
-                  className="h-8 text-caption gap-1.5"
-                  style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+                  className="text-body-sm font-semibold gap-2 transition-all hover:scale-[1.02]"
+                  style={{
+                    background: "rgba(16,185,129,0.08)",
+                    borderColor: "rgba(16,185,129,0.3)",
+                    color: "#34d399",
+                    padding: "0.5rem 1.25rem",
+                    height: "auto",
+                    borderRadius: "0.75rem",
+                  }}
                 >
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
                   </svg>
                   Add Item
                 </Button>
               </div>
 
               {/* Rows */}
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2">
                 {fields.map((field, index) => (
                   <SalesItemRow
                     key={field.id}
@@ -250,7 +256,13 @@ export function SalesForm({
                   type="button"
                   variant="outline"
                   disabled={isSubmitting}
-                  style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+                  className="text-body font-semibold"
+                  style={{
+                    borderColor: "var(--border-default)",
+                    color: "var(--text-secondary)",
+                    padding: "10px 24px",
+                    height: "auto",
+                  }}
                 >
                   Cancel
                 </Button>
@@ -258,11 +270,13 @@ export function SalesForm({
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="min-w-[140px]"
+                className="min-w-[140px] text-body font-semibold"
                 style={{
                   background: "linear-gradient(135deg, #10B981, #059669)",
-                  color:      "white",
-                  border:     "none",
+                  color: "white",
+                  border: "none",
+                  padding: "10px 24px",
+                  height: "auto",
                 }}
               >
                 Save Sale
@@ -281,8 +295,13 @@ export function SalesForm({
                   type="button"
                   variant="outline"
                   disabled={isSubmitting}
-                  className="w-24"
-                  style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+                  className="w-28 text-body font-semibold"
+                  style={{
+                    borderColor: "var(--border-default)",
+                    color: "var(--text-secondary)",
+                    padding: "10px 24px",
+                    height: "auto",
+                  }}
                 >
                   Cancel
                 </Button>
@@ -291,12 +310,14 @@ export function SalesForm({
                 id="sales-form-submit-btn"
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1"
+                className="flex-1 text-body font-semibold"
                 style={{
                   background: "linear-gradient(135deg, #10B981, #059669)",
-                  color:      "white",
-                  border:     "none",
-                  boxShadow:  "0 0 20px rgba(16,185,129,0.2)",
+                  color: "white",
+                  border: "none",
+                  boxShadow: "0 0 20px rgba(16,185,129,0.2)",
+                  padding: "10px 24px",
+                  height: "auto",
                 }}
               >
                 {isSubmitting ? (

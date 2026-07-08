@@ -1,5 +1,8 @@
 /**
  * PurchaseNewPage.tsx — /purchases/new
+ *
+ * Create a new purchase order using the PurchaseForm.
+ * Loads full supplier and product lists for the form selects.
  */
 import { Link } from "react-router-dom";
 import { PageContainer } from "@/components/common";
@@ -8,6 +11,46 @@ import { useCreatePurchase } from "@/features/purchases";
 import { useSuppliers } from "@/features/suppliers";
 import { useProducts } from "@/features/products";
 import { ROUTES } from "@/utils/constants";
+
+// ─── Skeleton ────────────────────────────────────────────────────────────────
+
+function NewPurchaseSkeleton() {
+  return (
+    <PageContainer variant="wide">
+      <div className="flex flex-col gap-2">
+        <div className="skeleton h-4 w-40 rounded" />
+        <div className="skeleton h-8 w-64 rounded-lg" />
+        <div className="skeleton h-4 w-96 rounded" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="lg:col-span-8 flex flex-col gap-6">
+          <div className="card-glass p-6 flex flex-col gap-4">
+            <div className="skeleton h-6 w-48 rounded" />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="skeleton h-10 rounded-xl" />
+              <div className="skeleton h-10 rounded-xl" />
+            </div>
+            <div className="skeleton h-20 w-full rounded-xl" />
+          </div>
+          <div className="card-glass p-6 flex flex-col gap-4">
+            <div className="skeleton h-6 w-36 rounded" />
+            <div className="skeleton h-14 w-full rounded-xl" />
+            <div className="skeleton h-14 w-full rounded-xl" />
+          </div>
+        </div>
+        <div className="lg:col-span-4">
+          <div className="card-glass p-6 flex flex-col gap-4">
+            <div className="skeleton h-6 w-40 rounded" />
+            <div className="skeleton h-24 w-full rounded-xl" />
+            <div className="skeleton h-10 w-full rounded-xl" />
+          </div>
+        </div>
+      </div>
+    </PageContainer>
+  );
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export function PurchaseNewPage() {
   const { mutate: createPurchase, isPending } = useCreatePurchase();
@@ -19,20 +62,12 @@ export function PurchaseNewPage() {
   const isLoading = isSuppliersLoading || isProductsLoading;
 
   if (isLoading) {
-    return (
-      <PageContainer variant="wide">
-        <div className="skeleton h-4 w-40 rounded" />
-        <div className="skeleton h-8 w-56 rounded-lg" />
-        <div className="card-glass p-6 flex flex-col gap-4">
-          <div className="skeleton h-6 w-32 rounded" />
-          <div className="skeleton h-10 w-full rounded-xl" />
-        </div>
-      </PageContainer>
-    );
+    return <NewPurchaseSkeleton />;
   }
 
   return (
     <PageContainer variant="wide">
+
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-caption text-text-muted">
         <Link to={ROUTES.PURCHASES} className="hover:text-text-secondary transition-colors">

@@ -37,28 +37,50 @@ export function PurchaseItemRow({
   };
 
   const selectClass = cn(
-    "w-full h-10 pl-5 pr-11 rounded-xl text-body text-text-primary appearance-none cursor-pointer",
+    "w-full h-12 rounded-xl text-body text-text-primary appearance-none cursor-pointer",
     "bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
   );
 
   const inputClass = cn(
-    "w-full h-10 px-5 rounded-xl text-body text-text-primary",
+    "w-full h-12 rounded-xl text-body text-text-primary",
     "bg-transparent border border-white/10 focus:border-primary-500/60 focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
     "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-end p-4 rounded-xl border border-white/5 bg-white/1 mb-3">
+    <div
+      className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end rounded-2xl mb-3"
+      style={{
+        background: "rgba(255,255,255,0.025)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        padding: "1.25rem 1.5rem",
+      }}
+    >
+      {/* Row number badge */}
+      <div className="hidden md:flex md:col-span-12 items-center gap-2 mb-1">
+        <span
+          className="text-caption font-semibold px-2 py-0.5 rounded-md"
+          style={{
+            background: "rgba(59,130,246,0.12)",
+            color: "rgba(96,165,250,0.9)",
+            border: "1px solid rgba(59,130,246,0.2)",
+          }}
+        >
+          Item #{index + 1}
+        </span>
+        <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.06)" }} />
+      </div>
+
       {/* Product Selection */}
       <div className="md:col-span-5 flex flex-col gap-1.5">
-        <label className="text-caption text-text-secondary font-medium">Product</label>
+        <label className="text-body-sm text-text-secondary font-medium">Product</label>
         <div className="relative">
           <select
             id={`items-${index}-product`}
             {...register(`items.${index}.product_id`)}
             onChange={(e) => handleProductChange(e.target.value)}
             className={selectClass}
-            style={{ background: "rgba(255,255,255,0.04)" }}
+            style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.75rem", paddingRight: "2.75rem" }}
           >
             <option value="" style={{ background: "var(--bg-surface-300)" }}>Choose product…</option>
             {products.map((p) => (
@@ -77,7 +99,7 @@ export function PurchaseItemRow({
 
       {/* Unit Cost */}
       <div className="md:col-span-3 flex flex-col gap-1.5">
-        <label className="text-caption text-text-secondary font-medium">Cost Price</label>
+        <label className="text-body-sm text-text-secondary font-medium">Cost Price</label>
         <div className="relative">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-body text-text-muted" aria-hidden="true">৳</span>
           <input
@@ -88,14 +110,14 @@ export function PurchaseItemRow({
             placeholder="0.00"
             {...register(`items.${index}.unit_price`, { valueAsNumber: true })}
             className={cn(inputClass)}
-            style={{ paddingLeft: "2.25rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
+            style={{ paddingLeft: "2.5rem", paddingRight: "1.5rem", background: "rgba(255,255,255,0.04)" }}
           />
         </div>
       </div>
 
       {/* Quantity */}
       <div className="md:col-span-2 flex flex-col gap-1.5">
-        <label className="text-caption text-text-secondary font-medium">Qty</label>
+        <label className="text-body-sm text-text-secondary font-medium">Qty</label>
         <input
           id={`items-${index}-qty`}
           type="number"
@@ -103,15 +125,18 @@ export function PurchaseItemRow({
           placeholder="1"
           {...register(`items.${index}.quantity`, { valueAsNumber: true })}
           className={inputClass}
-          style={{ background: "rgba(255,255,255,0.04)" }}
+          style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.75rem", paddingRight: "1.5rem" }}
         />
       </div>
 
       {/* Subtotal & Action */}
-      <div className="md:col-span-2 flex items-center justify-between gap-3 pt-4 md:pt-0">
-        <div className="flex flex-col gap-1">
-          <span className="text-caption text-text-muted md:hidden">Subtotal</span>
-          <span className="text-body-sm text-text-primary font-mono font-semibold">
+      <div className="md:col-span-2 flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-caption text-text-muted">Subtotal</span>
+          <span
+            className="text-body font-mono font-bold"
+            style={{ color: subtotal > 0 ? "var(--success-400)" : "var(--text-secondary)" }}
+          >
             ৳{subtotal.toFixed(2)}
           </span>
         </div>
@@ -120,13 +145,20 @@ export function PurchaseItemRow({
           id={`items-${index}-remove`}
           type="button"
           variant="ghost"
-          size="sm"
           disabled={isRemoveDisabled}
           onClick={() => onRemove(index)}
-          className="text-text-muted hover:text-danger-400 hover:bg-danger-400/10 h-9 w-9 p-0 rounded-xl"
           aria-label="Remove item"
+          style={{
+            width: "2.5rem",
+            height: "2.5rem",
+            padding: 0,
+            borderRadius: "0.75rem",
+            color: "var(--text-muted)",
+            flexShrink: 0,
+          }}
+          className="hover:text-danger-400 hover:bg-danger-400/10 transition-colors"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <polyline points="3 6 5 6 21 6"/>
             <path d="M19 6l-1 14H6L5 6"/>
           </svg>

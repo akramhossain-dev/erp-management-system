@@ -38,12 +38,12 @@ function Field({
   hint,
   className,
 }: {
-  label:     string;
-  htmlFor:   string;
-  error?:    string;
+  label: string;
+  htmlFor: string;
+  error?: string;
   required?: boolean;
-  children:  React.ReactNode;
-  hint?:     string;
+  children: React.ReactNode;
+  hint?: string;
   className?: string;
 }) {
   return (
@@ -66,9 +66,9 @@ function Field({
           className="text-caption text-danger-400 flex items-center gap-1.5"
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="flex-shrink-0">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="8" x2="12" y2="12"/>
-            <line x1="12" y1="16" x2="12.01" y2="16"/>
+            <circle cx="12" cy="12" r="10" />
+            <line x1="12" y1="8" x2="12" y2="12" />
+            <line x1="12" y1="16" x2="12.01" y2="16" />
           </svg>
           {error}
         </p>
@@ -90,15 +90,15 @@ function NumberInput({
   error,
   disabled,
 }: {
-  id:          string;
-  value:       number;
-  onChange:    (v: number) => void;
-  min?:        number;
-  step?:       number | string;
+  id: string;
+  value: number;
+  onChange: (v: number) => void;
+  min?: number;
+  step?: number | string;
   placeholder?: string;
-  prefix?:     string;
-  error?:      string;
-  disabled?:   boolean;
+  prefix?: string;
+  error?: string;
+  disabled?: boolean;
 }) {
   return (
     <div className="relative">
@@ -127,13 +127,13 @@ function NumberInput({
         aria-describedby={error ? `${id}-error` : undefined}
         aria-invalid={!!error}
         className={cn(
-          "w-full h-10 rounded-xl text-body text-text-primary",
+          "w-full h-12 rounded-xl text-body text-text-primary",
           "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
           error ? "border-danger-400/60 focus:ring-danger-400/30" : "border-white/10 focus:border-primary-500/60",
           "disabled:opacity-50 disabled:cursor-not-allowed",
           "[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none",
         )}
-        style={{ paddingLeft: prefix ? "2.25rem" : "1.25rem", paddingRight: "1.25rem", background: "rgba(255,255,255,0.04)" }}
+        style={{ paddingLeft: prefix ? "2.5rem" : "1.75rem", paddingRight: "1.5rem", background: "rgba(255,255,255,0.04)" }}
       />
     </div>
   );
@@ -146,7 +146,7 @@ function MarginPreview({
   sellingPrice,
 }: {
   purchasePrice: number;
-  sellingPrice:  number;
+  sellingPrice: number;
 }) {
   const margin = sellingPrice > 0 && purchasePrice >= 0
     ? ((sellingPrice - purchasePrice) / sellingPrice) * 100
@@ -155,10 +155,11 @@ function MarginPreview({
 
   return (
     <div
-      className="flex items-center gap-4 p-3 rounded-xl text-caption"
+      className="flex items-center gap-8 rounded-xl text-caption"
       style={{
         background: "rgba(59,130,246,0.06)",
-        border:     "1px solid rgba(59,130,246,0.12)",
+        border: "1px solid rgba(59,130,246,0.12)",
+        padding: "6px 8px",
       }}
     >
       <div className="flex flex-col">
@@ -190,9 +191,9 @@ function MarginPreview({
 interface ProductFormProps {
   /** Existing product for edit mode (undefined for create) */
   defaultValues?: Product;
-  onSubmit:       (values: ProductFormValues) => void;
-  isSubmitting:   boolean;
-  mode:           "create" | "edit";
+  onSubmit: (values: ProductFormValues) => void;
+  isSubmitting: boolean;
+  mode: "create" | "edit";
 }
 
 export function ProductForm({
@@ -209,28 +210,28 @@ export function ProductForm({
     setValue,
     formState: { errors },
   } = useForm<ProductFormValues>({
-    resolver:      zodResolver(productSchema),
+    resolver: zodResolver(productSchema),
     defaultValues: defaultValues
       ? {
-          name:           defaultValues.name,
-          sku:            defaultValues.sku,
-          category:       defaultValues.category ?? "",
-          description:    defaultValues.description ?? "",
-          purchase_price: Number(defaultValues.purchase_price),
-          selling_price:  Number(defaultValues.selling_price),
-          stock_quantity: Number(defaultValues.stock_quantity),
-          min_stock:      Number(defaultValues.min_stock),
-        }
+        name: defaultValues.name,
+        sku: defaultValues.sku,
+        category: defaultValues.category ?? "",
+        description: defaultValues.description ?? "",
+        purchase_price: Number(defaultValues.purchase_price),
+        selling_price: Number(defaultValues.selling_price),
+        stock_quantity: Number(defaultValues.stock_quantity),
+        min_stock: Number(defaultValues.min_stock),
+      }
       : PRODUCT_FORM_DEFAULTS,
   });
 
   // Watch prices for margin preview
   const purchasePrice = watch("purchase_price") ?? 0;
-  const sellingPrice  = watch("selling_price")  ?? 0;
+  const sellingPrice = watch("selling_price") ?? 0;
 
   const inputClass = (hasError: boolean) =>
     cn(
-      "w-full h-10 px-5 rounded-xl text-body text-text-primary",
+      "w-full h-12 rounded-xl text-body text-text-primary",
       "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
       hasError
         ? "border-danger-400/60 focus:ring-danger-400/30"
@@ -254,7 +255,7 @@ export function ProductForm({
           <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.2)" }} aria-hidden="true">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
               </svg>
             </span>
             Basic Information
@@ -271,7 +272,7 @@ export function ProductForm({
                 aria-describedby={errors.name ? "name-error" : undefined}
                 aria-invalid={!!errors.name}
                 className={inputClass(!!errors.name)}
-                style={{ background: "rgba(255,255,255,0.04)" }}
+                style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.75rem", paddingRight: "1.5rem" }}
               />
             </Field>
 
@@ -286,7 +287,7 @@ export function ProductForm({
                 aria-describedby={errors.sku ? "sku-error" : undefined}
                 aria-invalid={!!errors.sku}
                 className={cn(inputClass(!!errors.sku), "font-mono uppercase")}
-                style={{ background: "rgba(255,255,255,0.04)" }}
+                style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.75rem", paddingRight: "1.5rem" }}
               />
             </Field>
 
@@ -300,7 +301,7 @@ export function ProductForm({
                     inputClass(!!errors.category),
                     "appearance-none cursor-pointer",
                   )}
-                  style={{ paddingLeft: "1.25rem", paddingRight: "2.75rem", background: "rgba(255,255,255,0.04)" }}
+                  style={{ paddingLeft: "1.75rem", paddingRight: "2.75rem", background: "rgba(255,255,255,0.04)" }}
                 >
                   <option value="" style={{ background: "var(--bg-surface-300)" }}>Select category…</option>
                   {PRODUCT_CATEGORIES.map((cat) => (
@@ -311,7 +312,7 @@ export function ProductForm({
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"/>
+                    <polyline points="6 9 12 15 18 9" />
                   </svg>
                 </div>
               </div>
@@ -321,19 +322,19 @@ export function ProductForm({
             <Field label="Description" htmlFor="description" error={errors.description?.message} className="md:col-span-2">
               <textarea
                 id="description"
-                rows={3}
+                rows={5}
                 placeholder="Optional product description…"
                 {...register("description")}
                 aria-describedby={errors.description ? "description-error" : undefined}
                 aria-invalid={!!errors.description}
                 className={cn(
-                  "w-full px-5 py-3 rounded-xl text-body text-text-primary resize-none",
+                  "w-full rounded-xl text-body text-text-primary resize-none",
                   "bg-transparent border focus:outline-none focus:ring-2 focus:ring-primary-500/50 transition-all",
                   errors.description
                     ? "border-danger-400/60 focus:ring-danger-400/30"
                     : "border-white/10 focus:border-primary-500/60",
                 )}
-                style={{ background: "rgba(255,255,255,0.04)" }}
+                style={{ background: "rgba(255,255,255,0.04)", paddingLeft: "1.75rem", paddingRight: "1.5rem", paddingTop: "1.25rem", paddingBottom: "1.25rem" }}
               />
             </Field>
           </div>
@@ -344,8 +345,8 @@ export function ProductForm({
           <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
             <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.2)" }} aria-hidden="true">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="12" y1="1" x2="12" y2="23"/>
-                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                <line x1="12" y1="1" x2="12" y2="23" />
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
               </svg>
             </span>
             Pricing
@@ -403,9 +404,9 @@ export function ProductForm({
             <h2 className="text-h4 text-text-primary font-semibold flex items-center gap-2">
               <span className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "rgba(139,92,246,0.12)", border: "1px solid rgba(139,92,246,0.2)" }} aria-hidden="true">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="18" y1="20" x2="18" y2="10"/>
-                  <line x1="12" y1="20" x2="12" y2="4"/>
-                  <line x1="6"  y1="20" x2="6"  y2="14"/>
+                  <line x1="18" y1="20" x2="18" y2="10" />
+                  <line x1="12" y1="20" x2="12" y2="4" />
+                  <line x1="6" y1="20" x2="6" y2="14" />
                 </svg>
               </span>
               Inventory
@@ -465,8 +466,11 @@ export function ProductForm({
               type="button"
               variant="outline"
               disabled={isSubmitting}
-              className="min-w-[100px]"
-              style={{ borderColor: "var(--border-default)", color: "var(--text-secondary)" }}
+              style={{
+                borderColor: "var(--border-default)",
+                color: "var(--text-secondary)",
+                padding: "0.625rem 1.75rem",
+              }}
             >
               Cancel
             </Button>
@@ -478,9 +482,9 @@ export function ProductForm({
             className="min-w-[140px]"
             style={{
               background: "linear-gradient(135deg, #3B82F6, #2563EB)",
-              color:      "white",
-              border:     "none",
-              boxShadow:  "0 0 20px rgba(59,130,246,0.2)",
+              color: "white",
+              border: "none",
+              boxShadow: "0 0 20px rgba(59,130,246,0.2)",
             }}
           >
             {isSubmitting ? (

@@ -12,7 +12,7 @@ export function SalesSummary({ customers }: SalesSummaryProps) {
   const { control } = useFormContext();
 
   const selectedCustomerId = useWatch({ control, name: "customer_id" });
-  const items              = useWatch({ control, name: "items" }) || [];
+  const items = useWatch({ control, name: "items" }) || [];
 
   const customer = customers.find((c) => c.id === selectedCustomerId);
 
@@ -27,7 +27,7 @@ export function SalesSummary({ customers }: SalesSummaryProps) {
   return (
     <div className="card-glass p-6 flex flex-col gap-6 sticky top-24">
       <div>
-        <h3 className="text-h4 text-text-primary font-semibold">Invoice Summary</h3>
+        <h3 className="text-h3 text-text-primary font-semibold">Invoice Summary</h3>
         <p className="text-caption text-text-muted mt-0.5">Aggregates for the sale invoice</p>
       </div>
 
@@ -62,8 +62,8 @@ export function SalesSummary({ customers }: SalesSummaryProps) {
           </div>
           <div className="w-full h-px bg-white/10 my-1" aria-hidden="true" />
           <div className="flex items-center justify-between">
-            <span className="text-body-sm text-text-primary font-semibold">Total Invoice Sum</span>
-            <span className="text-h3 text-primary-400 font-bold font-mono">
+            <span className="text-body text-text-primary font-semibold">Total Invoice Sum</span>
+            <span className="text-h2 text-primary-400 font-bold font-mono">
               ৳{totalAmount.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
