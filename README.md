@@ -172,7 +172,6 @@ erp-management-system/
 | [UI_GUIDE.md](docs/UI_GUIDE.md) | Theme system, CSS tokens, design patterns |
 | [PROJECT_PLAN.md](docs/PROJECT_PLAN.md) | Build phases, implementation timeline |
 | [AI_WORKFLOW.md](docs/AI_WORKFLOW.md) | How AI tools were used throughout development |
-| [SUBMISSION.md](docs/SUBMISSION.md) | Final assessment submission summary |
 
 ---
 
