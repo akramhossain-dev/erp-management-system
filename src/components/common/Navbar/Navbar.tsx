@@ -109,8 +109,8 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
         minHeight: height,
         display: "flex",
         alignItems: "center",
-        gap: 16,
-        padding: "0 24px",
+        gap: 12,
+        padding: "0 16px",
         flexShrink: 0,
         background: "rgba(8,12,20,0.9)",
         backdropFilter: "blur(20px) saturate(160%)",
@@ -126,11 +126,8 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
           id="mobile-menu-btn"
           onClick={onMobileMenuToggle}
           aria-label="Open navigation menu"
-          className="lg:hidden"
+          className="flex items-center justify-center lg:hidden"
           style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
             width: 36,
             height: 36,
             minWidth: 36,
@@ -154,11 +151,11 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
         </button>
 
         {/* Page title + subtitle */}
-        <div style={{ minWidth: 0 }}>
+        <div style={{ minWidth: 0, flex: 1 }}>
           <h1
             style={{
               margin: 0,
-              fontSize: 17,
+              fontSize: 16,
               fontWeight: 600,
               color: "#f1f5f9",
               lineHeight: "1.25",
@@ -170,6 +167,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
             {pageTitle}
           </h1>
           <p
+            className="hidden sm:block"
             style={{
               margin: 0,
               fontSize: 11.5,

@@ -81,15 +81,13 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         height: "100vh",
         width,
         zIndex: 40,
-        display: "flex",
-        flexDirection: "column",
         transition: "width 300ms ease-in-out",
         overflow: "hidden",
         background: "linear-gradient(180deg, #0c1120 0%, #0e1528 100%)",
         borderRight: "1px solid rgba(255,255,255,0.07)",
         boxShadow: "2px 0 20px rgba(0,0,0,0.5)",
       }}
-      className="hidden lg:flex"
+      className="hidden lg:flex flex-col"
     >
       {/* ── Brand ────────────────────────────────────────────────────────── */}
       <div
