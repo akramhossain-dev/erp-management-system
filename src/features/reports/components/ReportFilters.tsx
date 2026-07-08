@@ -25,9 +25,9 @@ const selectStyle: React.CSSProperties = {
   paddingRight: "2.5rem",
   borderRadius: 10,
   fontSize: 13.5,
-  color: "#cbd5e1",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.1)",
+  color: "var(--text-secondary)",
+  background: "rgba(17, 24, 39, 0.5)",
+  border: "1px solid var(--border-default)",
   outline: "none",
   appearance: "none" as const,
   cursor: "pointer",
@@ -47,7 +47,7 @@ function SelectWrapper({ children }: { children: React.ReactNode }) {
           top: "50%",
           transform: "translateY(-50%)",
           pointerEvents: "none",
-          color: "rgba(100,116,139,0.7)",
+          color: "var(--text-muted)",
         }}
       >
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -65,10 +65,12 @@ function FilterLabel({ htmlFor, children }: { htmlFor: string; children: React.R
       style={{
         fontSize: 11.5,
         fontWeight: 600,
-        color: "rgba(100,116,139,0.85)",
+        color: "var(--text-muted)",
         marginBottom: 6,
         display: "block",
         userSelect: "none",
+        textTransform: "uppercase",
+        letterSpacing: "0.06em",
       }}
     >
       {children}
@@ -104,8 +106,8 @@ export function ReportFilters({
   return (
     <div
       style={{
-        background: "rgba(255,255,255,0.025)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: "var(--glass-bg)",
+        border: "1px solid var(--border-default)",
         borderRadius: 16,
         padding: "20px 22px",
         marginBottom: 20,
@@ -132,7 +134,7 @@ export function ReportFilters({
                   top: "50%",
                   transform: "translateY(-50%)",
                   pointerEvents: "none",
-                  color: "rgba(100,116,139,0.6)",
+                  color: "var(--text-muted)",
                 }}
                 aria-hidden="true"
               >
@@ -154,8 +156,9 @@ export function ReportFilters({
                   paddingRight: "1rem",
                   borderRadius: 10,
                   fontSize: 13.5,
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(17, 24, 39, 0.5)",
+                  border: "1px solid var(--border-default)",
+                  color: "var(--text-primary)",
                 }}
               />
             </div>
@@ -259,7 +262,7 @@ export function ReportFilters({
                 height: 42,
                 padding: "0 14px",
                 fontSize: 13,
-                color: "rgba(148,163,184,0.8)",
+                color: "var(--text-tertiary)",
                 gap: 6,
               }}
             >
@@ -278,9 +281,9 @@ export function ReportFilters({
                 height: 42,
                 padding: "0 18px",
                 borderRadius: 10,
-                border: "1px solid rgba(255,255,255,0.12)",
-                background: exportDisabled ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)",
-                color: exportDisabled ? "rgba(100,116,139,0.4)" : "#e2e8f0",
+                border: "1px solid var(--border-default)",
+                background: exportDisabled ? "transparent" : "var(--glass-bg-hover)",
+                color: exportDisabled ? "var(--text-muted)" : "var(--text-primary)",
                 fontSize: 13.5,
                 fontWeight: 500,
                 cursor: exportDisabled ? "not-allowed" : "pointer",
@@ -289,16 +292,19 @@ export function ReportFilters({
                 gap: 8,
                 transition: "background 150ms, border-color 150ms",
                 flexShrink: 0,
+                opacity: exportDisabled ? 0.5 : 1,
               }}
               onMouseEnter={(e) => {
                 if (!exportDisabled) {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.1)";
-                  (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.2)";
+                  (e.currentTarget as HTMLElement).style.background = "rgba(59,130,246,0.12)";
+                  (e.currentTarget as HTMLElement).style.borderColor = "var(--primary-500)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--primary-400)";
                 }
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLElement).style.background = exportDisabled ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.06)";
-                (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)";
+                (e.currentTarget as HTMLElement).style.background = exportDisabled ? "transparent" : "var(--glass-bg-hover)";
+                (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
+                (e.currentTarget as HTMLElement).style.color = exportDisabled ? "var(--text-muted)" : "var(--text-primary)";
               }}
             >
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

@@ -102,9 +102,9 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
         style={{
           zIndex: 50,
           width: "min(300px, 85vw)",
-          background: "linear-gradient(180deg, #0c1120 0%, #0e1528 100%)",
-          borderRight: "1px solid rgba(255,255,255,0.08)",
-          boxShadow: "6px 0 32px rgba(0,0,0,0.6)",
+          background: "linear-gradient(180deg, var(--bg-surface-100) 0%, var(--bg-base) 100%)",
+          borderRight: "1px solid var(--border-subtle)",
+          boxShadow: "6px 0 36px rgba(0,0,0,0.65)",
         }}
       >
         {/* ── Header ─────────────────────────────────────────────────── */}
@@ -113,7 +113,7 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
           style={{
             height: 64,
             padding: "0 20px",
-            borderBottom: "1px solid rgba(255,255,255,0.07)",
+            borderBottom: "1px solid var(--border-subtle)",
           }}
         >
           <div className="flex items-center gap-3">
@@ -140,10 +140,10 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
             </div>
             {/* Brand text */}
             <div>
-              <p style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", lineHeight: "1.25", margin: 0 }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", lineHeight: "1.25", margin: 0 }}>
                 ERP System
               </p>
-              <p style={{ fontSize: 11, color: "rgba(96,165,250,0.85)", lineHeight: "1.25", marginTop: 1 }}>
+              <p style={{ fontSize: 11, color: "var(--primary-400)", lineHeight: "1.25", marginTop: 1, opacity: 0.85 }}>
                 Management Suite
               </p>
             </div>
@@ -157,23 +157,23 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
               width: 34,
               height: 34,
               borderRadius: 9,
-              border: "1px solid rgba(255,255,255,0.1)",
-              background: "rgba(255,255,255,0.04)",
+              border: "1px solid var(--border-default)",
+              background: "var(--glass-bg)",
               cursor: "pointer",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              color: "rgba(148,163,184,0.8)",
+              color: "var(--text-tertiary)",
               flexShrink: 0,
               transition: "background 150ms, color 150ms",
             }}
             onMouseEnter={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.08)";
-              (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+              (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
             }}
             onMouseLeave={(e) => {
-              (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-              (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+              (e.currentTarget as HTMLElement).style.background = "var(--glass-bg)";
+              (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -203,7 +203,8 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  color: "rgba(100,116,139,0.6)",
+                  color: "var(--text-muted)",
+                  opacity: 0.75,
                   padding: "4px 12px 6px",
                   margin: 0,
                   userSelect: "none",
@@ -236,23 +237,22 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                       fontWeight: 500,
                       textDecoration: "none",
                       transition: "background 150ms, color 150ms",
-                      color: isActive ? "#60a5fa" : "rgba(148,163,184,0.85)",
-                      background: isActive ? "rgba(59,130,246,0.1)" : "transparent",
+                      color: isActive ? "var(--primary-400)" : "var(--text-tertiary)",
+                      background: isActive ? "var(--accent-soft)" : "transparent",
                     }}
                     onMouseEnter={(e) => {
                       if (!isActive) {
-                        (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
-                        (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+                        (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+                        (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) {
                         (e.currentTarget as HTMLElement).style.background = "transparent";
-                        (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.85)";
+                        (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
                       }
                     }}
                   >
-                    {/* Active bar */}
                     {isActive && (
                       <span
                         aria-hidden="true"
@@ -264,8 +264,8 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                           width: 3,
                           height: 18,
                           borderRadius: "0 4px 4px 0",
-                          background: "#3B82F6",
-                          boxShadow: "0 0 8px rgba(59,130,246,0.7)",
+                          background: "var(--primary-500)",
+                          boxShadow: "var(--glow-primary)",
                         }}
                       />
                     )}
@@ -294,8 +294,8 @@ export function MobileDrawer({ open, onClose }: MobileDrawerProps) {
                           width: 6,
                           height: 6,
                           borderRadius: "50%",
-                          background: "#60a5fa",
-                          boxShadow: "0 0 6px #3B82F6",
+                          background: "var(--primary-400)",
+                          boxShadow: "0 0 6px var(--primary-500)",
                           flexShrink: 0,
                         }}
                       />

@@ -112,10 +112,10 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
         gap: 12,
         padding: "0 16px",
         flexShrink: 0,
-        background: "rgba(8,12,20,0.9)",
+        background: "rgba(11, 15, 25, 0.88)",
         backdropFilter: "blur(20px) saturate(160%)",
         WebkitBackdropFilter: "blur(20px) saturate(160%)",
-        borderBottom: "1px solid rgba(255,255,255,0.07)",
+        borderBottom: "1px solid var(--border-subtle)",
       }}
     >
       {/* ── Left: hamburger + page title ──────────────────────────────────── */}
@@ -135,16 +135,16 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
             border: "none",
             background: "transparent",
             cursor: "pointer",
-            color: "rgba(148,163,184,0.8)",
+            color: "var(--text-tertiary)",
             transition: "background 150ms, color 150ms",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-            (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+            (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background = "transparent";
-            (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
           }}
         >
           <MenuIcon size={20} />
@@ -157,7 +157,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
               margin: 0,
               fontSize: 16,
               fontWeight: 600,
-              color: "#f1f5f9",
+              color: "var(--text-primary)",
               lineHeight: "1.25",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -171,7 +171,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
             style={{
               margin: 0,
               fontSize: 11.5,
-              color: "rgba(100,116,139,0.85)",
+              color: "var(--text-muted)",
               lineHeight: "1.3",
               whiteSpace: "nowrap",
               overflow: "hidden",
@@ -201,16 +201,16 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
             border: "none",
             background: "transparent",
             cursor: "pointer",
-            color: "rgba(148,163,184,0.8)",
+            color: "var(--text-tertiary)",
             transition: "background 150ms, color 150ms",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-            (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+            (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-primary)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background = "transparent";
-            (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
           }}
         >
           <BellIcon size={18} />
@@ -224,17 +224,14 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
               width: 7,
               height: 7,
               borderRadius: "50%",
-              background: "#3B82F6",
+              background: "var(--primary-500)",
               boxShadow: "0 0 5px rgba(59,130,246,0.8)",
             }}
           />
         </button>
 
         {/* Divider */}
-        <div
-          aria-hidden="true"
-          style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)", margin: "0 6px" }}
-        />
+        <div aria-hidden="true" style={{ width: 1, height: 20, background: "var(--border-default)", margin: "0 6px" }} />
 
         {/* User menu button */}
         <div style={{ position: "relative" }}>
@@ -273,7 +270,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                 style={{
                   fontSize: 13,
                   fontWeight: 600,
-                  color: "#e2e8f0",
+                  color: "var(--text-secondary)",
                   whiteSpace: "nowrap",
                   maxWidth: 130,
                   overflow: "hidden",
@@ -286,7 +283,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
               <span
                 style={{
                   fontSize: 11,
-                  color: "rgba(100,116,139,0.8)",
+                  color: "var(--text-muted)",
                   whiteSpace: "nowrap",
                   maxWidth: 130,
                   overflow: "hidden",
@@ -311,7 +308,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
               aria-hidden="true"
               className="hidden sm:block"
               style={{
-                color: "rgba(100,116,139,0.7)",
+                color: "var(--text-muted)",
                 transform: userMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
                 transition: "transform 200ms",
                 flexShrink: 0,
@@ -343,10 +340,10 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                   zIndex: 50,
                   borderRadius: 12,
                   overflow: "hidden",
-                  background: "rgba(14,20,36,0.97)",
+                  background: "var(--bg-surface-100)",
                   backdropFilter: "blur(20px)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(59,130,246,0.05)",
+                  border: "1px solid var(--border-default)",
+                  boxShadow: "var(--shadow-xl), 0 0 0 1px rgba(59,130,246,0.05)",
                 }}
               >
                 {/* User info */}
@@ -356,7 +353,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                     alignItems: "center",
                     gap: 10,
                     padding: "14px 16px",
-                    borderBottom: "1px solid rgba(255,255,255,0.07)",
+                    borderBottom: "1px solid var(--border-subtle)",
                   }}
                 >
                   <UserAvatar name={userName} size={34} />
@@ -366,7 +363,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                         margin: 0,
                         fontSize: 13,
                         fontWeight: 600,
-                        color: "#f1f5f9",
+                        color: "var(--text-primary)",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -379,7 +376,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                       style={{
                         margin: "2px 0 0",
                         fontSize: 11,
-                        color: "rgba(100,116,139,0.8)",
+                        color: "var(--text-muted)",
                         overflow: "hidden",
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap",
@@ -408,7 +405,7 @@ export function Navbar({ onMobileMenuToggle, height = 64 }: NavbarProps) {
                       border: "none",
                       background: "transparent",
                       cursor: isMutating ? "not-allowed" : "pointer",
-                      color: "#f87171",
+                      color: "var(--danger-400)",
                       fontSize: 13,
                       fontWeight: 500,
                       transition: "background 150ms, color 150ms",

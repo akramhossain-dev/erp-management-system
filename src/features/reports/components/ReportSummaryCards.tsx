@@ -27,8 +27,8 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
         <div
           key={idx}
           style={{
-            background: "rgba(255,255,255,0.025)",
-            border: "1px solid rgba(255,255,255,0.07)",
+            background: "var(--glass-bg)",
+            border: "1px solid var(--border-default)",
             borderRadius: 16,
             padding: "20px 22px",
             display: "flex",
@@ -39,11 +39,11 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
             overflow: "hidden",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.12)";
-            (e.currentTarget as HTMLElement).style.boxShadow = "0 4px 24px rgba(0,0,0,0.2)";
+            (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)";
+            (e.currentTarget as HTMLElement).style.boxShadow = "var(--shadow-md)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)";
+            (e.currentTarget as HTMLElement).style.borderColor = "var(--border-default)";
             (e.currentTarget as HTMLElement).style.boxShadow = "none";
           }}
         >
@@ -74,7 +74,7 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
                 fontWeight: 600,
                 textTransform: "uppercase",
                 letterSpacing: "0.08em",
-                color: "rgba(100,116,139,0.8)",
+                color: "var(--text-muted)",
               }}
             >
               {card.label}
@@ -86,8 +86,8 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
                   width: 36,
                   height: 36,
                   borderRadius: 10,
-                  background: card.color ? `${card.color}15` : "rgba(255,255,255,0.04)",
-                  border: `1px solid ${card.color ? `${card.color}25` : "rgba(255,255,255,0.07)"}`,
+                  background: card.color ? `${card.color}15` : "var(--glass-bg-hover)",
+                  border: `1px solid ${card.color ? `${card.color}28` : "var(--border-subtle)"}`,
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -105,7 +105,7 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
               style={{
                 fontSize: 26,
                 fontWeight: 700,
-                color: "#f1f5f9",
+                color: "var(--text-primary)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1,
               }}
@@ -113,7 +113,7 @@ export function ReportSummaryCards({ cards }: ReportSummaryCardsProps) {
               {card.value}
             </span>
             {card.change && (
-              <p style={{ fontSize: 12, color: "rgba(100,116,139,0.75)", marginTop: 4 }}>
+              <p style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 4 }}>
                 {card.change}
               </p>
             )}

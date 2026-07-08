@@ -83,9 +83,9 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         zIndex: 40,
         transition: "width 300ms ease-in-out",
         overflow: "hidden",
-        background: "linear-gradient(180deg, #0c1120 0%, #0e1528 100%)",
-        borderRight: "1px solid rgba(255,255,255,0.07)",
-        boxShadow: "2px 0 20px rgba(0,0,0,0.5)",
+        background: "linear-gradient(180deg, var(--bg-surface-100) 0%, var(--bg-base) 100%)",
+        borderRight: "1px solid var(--border-subtle)",
+        boxShadow: "2px 0 24px rgba(0,0,0,0.55)",
       }}
       className="hidden lg:flex flex-col"
     >
@@ -98,7 +98,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           alignItems: "center",
           gap: 12,
           padding: collapsed ? "0 18px" : "0 20px",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
+          borderBottom: "1px solid var(--border-subtle)",
           flexShrink: 0,
           transition: "padding 300ms ease-in-out",
         }}
@@ -135,10 +135,10 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             flexShrink: 0,
           }}
         >
-          <p style={{ fontSize: 14, fontWeight: 700, color: "#f1f5f9", whiteSpace: "nowrap", lineHeight: "1.25" }}>
+          <p style={{ fontSize: 14, fontWeight: 700, color: "var(--text-primary)", whiteSpace: "nowrap", lineHeight: "1.25" }}>
             ERP System
           </p>
-          <p style={{ fontSize: 11, color: "rgba(96,165,250,0.85)", whiteSpace: "nowrap", lineHeight: "1.25", marginTop: 1 }}>
+          <p style={{ fontSize: 11, color: "var(--primary-400)", whiteSpace: "nowrap", lineHeight: "1.25", marginTop: 1, opacity: 0.85 }}>
             Management Suite
           </p>
         </div>
@@ -168,7 +168,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                   fontWeight: 600,
                   textTransform: "uppercase",
                   letterSpacing: "0.1em",
-                  color: "rgba(100,116,139,0.65)",
+                  color: "var(--text-muted)",
+                  opacity: 0.7,
                   padding: "4px 10px 6px",
                   margin: 0,
                   userSelect: "none",
@@ -181,7 +182,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 <div
                   style={{
                     height: 1,
-                    background: "rgba(255,255,255,0.06)",
+                    background: "var(--border-subtle)",
                     margin: "8px 10px",
                   }}
                 />
@@ -214,19 +215,19 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                     fontWeight: 500,
                     textDecoration: "none",
                     transition: "background 150ms, color 150ms",
-                    color: isActive ? "#60a5fa" : "rgba(148,163,184,0.85)",
-                    background: isActive ? "rgba(59,130,246,0.1)" : "transparent",
+                    color: isActive ? "var(--primary-400)" : "var(--text-tertiary)",
+                    background: isActive ? "var(--accent-soft)" : "transparent",
                   }}
                   onMouseEnter={(e) => {
                     if (!isActive) {
-                      (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.05)";
-                      (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+                      (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
                     }
                   }}
                   onMouseLeave={(e) => {
                     if (!isActive) {
                       (e.currentTarget as HTMLElement).style.background = "transparent";
-                      (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.85)";
+                      (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
                     }
                   }}
                 >
@@ -242,8 +243,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                         width: 3,
                         height: 18,
                         borderRadius: "0 4px 4px 0",
-                        background: "#3B82F6",
-                        boxShadow: "0 0 8px rgba(59,130,246,0.7)",
+                        background: "var(--primary-500)",
+                        boxShadow: "var(--glow-primary)",
                       }}
                     />
                   )}
@@ -276,8 +277,8 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                         width: 6,
                         height: 6,
                         borderRadius: "50%",
-                        background: "#60a5fa",
-                        boxShadow: "0 0 6px #3B82F6",
+                        background: "var(--primary-400)",
+                        boxShadow: "0 0 6px var(--primary-500)",
                         flexShrink: 0,
                       }}
                     />
@@ -293,7 +294,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
       <div
         style={{
           padding: "10px 8px",
-          borderTop: "1px solid rgba(255,255,255,0.07)",
+          borderTop: "1px solid var(--border-subtle)",
           flexShrink: 0,
         }}
       >
@@ -312,16 +313,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
             border: "none",
             background: "transparent",
             cursor: "pointer",
-            color: "rgba(100,116,139,0.7)",
+            color: "var(--text-muted)",
             transition: "background 150ms, color 150ms",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
-            (e.currentTarget as HTMLElement).style.color = "#94a3b8";
+            (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
           }}
           onMouseLeave={(e) => {
             (e.currentTarget as HTMLElement).style.background = "transparent";
-            (e.currentTarget as HTMLElement).style.color = "rgba(100,116,139,0.7)";
+            (e.currentTarget as HTMLElement).style.color = "var(--text-muted)";
           }}
         >
           <ChevronLeftIcon

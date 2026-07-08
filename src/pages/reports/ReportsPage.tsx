@@ -129,14 +129,14 @@ export function ReportsPage() {
               style={{
                 fontSize: 22,
                 fontWeight: 700,
-                color: "#f1f5f9",
+                color: "var(--text-primary)",
                 margin: 0,
                 lineHeight: 1.25,
               }}
             >
               Reports &amp; Analytics
             </h1>
-            <p style={{ fontSize: 13, color: "rgba(100,116,139,0.9)", margin: "2px 0 0" }}>
+            <p style={{ fontSize: 13, color: "var(--text-muted)", margin: "2px 0 0" }}>
               Aggregated insights, transaction history &amp; CSV exports
             </p>
           </div>
@@ -146,8 +146,8 @@ export function ReportsPage() {
       {/* ── Tab Navigation ──────────────────────────────────────────── */}
       <div
         style={{
-          background: "rgba(255,255,255,0.02)",
-          border: "1px solid rgba(255,255,255,0.07)",
+          background: "var(--glass-bg)",
+          border: "1px solid var(--border-subtle)",
           borderRadius: 16,
           padding: "6px",
           display: "flex",
@@ -183,27 +183,27 @@ export function ReportsPage() {
                 whiteSpace: "nowrap",
                 flexShrink: 0,
                 transition: "all 200ms ease",
-                background: isActive ? `linear-gradient(135deg, ${tab.color}18, ${tab.color}0c)` : "transparent",
-                color: isActive ? tab.color : "rgba(148,163,184,0.8)",
-                boxShadow: isActive ? `0 0 0 1px ${tab.color}30` : "none",
+                background: isActive ? `linear-gradient(135deg, ${tab.color}22, ${tab.color}0e)` : "transparent",
+                color: isActive ? tab.color : "var(--text-tertiary)",
+                boxShadow: isActive ? `0 0 0 1px ${tab.color}38` : "none",
               }}
               onMouseEnter={(e) => {
                 if (!isActive) {
-                  (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                  (e.currentTarget as HTMLElement).style.color = "#e2e8f0";
+                  (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--text-secondary)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!isActive) {
                   (e.currentTarget as HTMLElement).style.background = "transparent";
-                  (e.currentTarget as HTMLElement).style.color = "rgba(148,163,184,0.8)";
+                  (e.currentTarget as HTMLElement).style.color = "var(--text-tertiary)";
                 }
               }}
             >
               <span
                 style={{
                   display: "flex",
-                  color: isActive ? tab.color : "rgba(148,163,184,0.6)",
+                  color: isActive ? tab.color : "var(--text-muted)",
                   transition: "color 200ms",
                 }}
                 aria-hidden="true"

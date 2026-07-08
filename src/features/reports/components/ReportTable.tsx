@@ -46,8 +46,8 @@ export function ReportTable<T>({
     <div
       className={cn(className)}
       style={{
-        background: "rgba(255,255,255,0.02)",
-        border: "1px solid rgba(255,255,255,0.07)",
+        background: "var(--glass-bg)",
+        border: "1px solid var(--border-default)",
         borderRadius: 16,
         overflow: "hidden",
       }}
@@ -61,8 +61,8 @@ export function ReportTable<T>({
           <thead>
             <tr
               style={{
-                background: "rgba(255,255,255,0.03)",
-                borderBottom: "1px solid rgba(255,255,255,0.07)",
+                background: "var(--bg-surface-200)",
+                borderBottom: "1px solid var(--border-subtle)",
               }}
             >
               {columns.map((col, i) => (
@@ -76,7 +76,7 @@ export function ReportTable<T>({
                     fontWeight: 600,
                     textTransform: "uppercase",
                     letterSpacing: "0.08em",
-                    color: "rgba(100,116,139,0.8)",
+                    color: "var(--text-muted)",
                     whiteSpace: "nowrap",
                     textAlign: "left",
                   }}
@@ -93,7 +93,7 @@ export function ReportTable<T>({
               Array.from({ length: 6 }).map((_, rIdx) => (
                 <tr
                   key={rIdx}
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
+                  style={{ borderBottom: "1px solid var(--border-subtle)" }}
                 >
                   {columns.map((col, cIdx) => (
                     <td
@@ -106,7 +106,7 @@ export function ReportTable<T>({
                           height: 14,
                           width: cIdx === 0 ? "60%" : "40%",
                           borderRadius: 6,
-                          background: "rgba(255,255,255,0.06)",
+                          background: "var(--border-default)",
                           animation: "pulse 1.5s ease-in-out infinite",
                         }}
                       />
@@ -122,8 +122,8 @@ export function ReportTable<T>({
                       width: 56,
                       height: 56,
                       borderRadius: 16,
-                      background: "rgba(255,255,255,0.03)",
-                      border: "1px solid rgba(255,255,255,0.07)",
+                      background: "var(--glass-bg-hover)",
+                      border: "1px solid var(--border-subtle)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
@@ -131,15 +131,15 @@ export function ReportTable<T>({
                     }}
                     aria-hidden="true"
                   >
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="rgba(100,116,139,0.5)" strokeWidth="1.5">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="1.5">
                       <circle cx="11" cy="11" r="8"/>
                       <line x1="21" y1="21" x2="16.65" y2="16.65"/>
                     </svg>
                   </div>
-                  <p style={{ fontSize: 14, fontWeight: 600, color: "rgba(148,163,184,0.9)", margin: "0 0 4px" }}>
+                  <p style={{ fontSize: 14, fontWeight: 600, color: "var(--text-secondary)", margin: "0 0 4px" }}>
                     No records found
                   </p>
-                  <p style={{ fontSize: 12.5, color: "rgba(100,116,139,0.7)", margin: 0 }}>
+                  <p style={{ fontSize: 12.5, color: "var(--text-muted)", margin: 0 }}>
                     Try adjusting the filter options above
                   </p>
                 </td>
@@ -149,11 +149,11 @@ export function ReportTable<T>({
                 <tr
                   key={rIdx}
                   style={{
-                    borderBottom: rIdx < data.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none",
+                    borderBottom: rIdx < data.length - 1 ? "1px solid var(--border-subtle)" : "none",
                     transition: "background 150ms",
                   }}
                   onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.025)";
+                    (e.currentTarget as HTMLElement).style.background = "var(--glass-bg-hover)";
                   }}
                   onMouseLeave={(e) => {
                     (e.currentTarget as HTMLElement).style.background = "transparent";
@@ -166,7 +166,7 @@ export function ReportTable<T>({
                       style={{
                         padding: "13px 18px",
                         fontSize: 13.5,
-                        color: "#cbd5e1",
+                        color: "var(--text-secondary)",
                         textAlign: "left",
                       }}
                     >
@@ -181,8 +181,8 @@ export function ReportTable<T>({
             {!isLoading && data.length > 0 && hasTotals && (
               <tr
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  borderTop: "1px solid rgba(255,255,255,0.09)",
+                  background: "var(--bg-surface-200)",
+                  borderTop: "1px solid var(--border-default)",
                 }}
               >
                 {columns.map((col, i) => {
@@ -196,12 +196,12 @@ export function ReportTable<T>({
                         padding: "13px 18px",
                         fontSize: 13.5,
                         fontWeight: 700,
-                        color: "#f1f5f9",
+                        color: "var(--text-primary)",
                         textAlign: "left",
                       }}
                     >
                       {isFirst ? (
-                        <span style={{ color: "rgba(148,163,184,0.8)", fontWeight: 600, fontFamily: "inherit" }}>
+                        <span style={{ color: "var(--text-tertiary)", fontWeight: 600, fontFamily: "inherit" }}>
                           {summaryLabel}
                         </span>
                       ) : total !== null ? (
@@ -225,9 +225,9 @@ export function ReportTable<T>({
         <div
           style={{
             padding: "10px 18px",
-            borderTop: "1px solid rgba(255,255,255,0.05)",
+            borderTop: "1px solid var(--border-subtle)",
             fontSize: 12,
-            color: "rgba(100,116,139,0.7)",
+            color: "var(--text-muted)",
           }}
         >
           {data.length} record{data.length !== 1 ? "s" : ""}
